@@ -8,8 +8,9 @@ const jwt = require("jsonwebtoken");
 const morgan = require("morgan");
 
 // My Routers
-const foodItemRoutes = require("./routes/foodItems");
+const productRoutes = require("./routes/products");
 const foodItemCategoryRoutes = require("./routes/foodCategory");
+const groceryItemCategoryRoutes = require("./routes/groceryCategory");
 const signupRoutes = require("./routes/signUp");
 const usersRoutes = require("./routes/users");
 
@@ -36,8 +37,9 @@ mongoose
 const api = process.env.API;
 
 // Routes
-server.use(api, foodItemRoutes);
-server.use(api, foodItemCategoryRoutes);
+server.use(api, productRoutes); // for all products.
+server.use(api, foodItemCategoryRoutes); // for food category
+server.use(api, groceryItemCategoryRoutes); // for grocery category
 server.use(api, signupRoutes);
 server.use(api, usersRoutes);
 
