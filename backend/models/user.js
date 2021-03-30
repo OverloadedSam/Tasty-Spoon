@@ -7,14 +7,14 @@ const userSchema = new mongoose.Schema(
             require: true,
             maxLength: 31,
             trim: true,
-            lowerCase: true,
+            lowercase: true,
         },
         lastName: {
             type: String,
             require: true,
             maxLength: 31,
             trim: true,
-            lowerCase: true,
+            lowercase: true,
         },
         email: {
             type: String,
@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema(
         },
         address: {
             type: String,
+            lowercase: true,
             maxLength: 400,
             trim: true,
             default: "",

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const foodCategorySchema = new mongoose.Schema(
+const groceryCategorySchema = new mongoose.Schema(
     {
         id: {
             type: Number,
@@ -10,13 +10,16 @@ const foodCategorySchema = new mongoose.Schema(
             max: 10000,
         },
         name: {
-            // name like burgers, foodGrains, oils soups, beverages etc.
+            // name foodGrains, oils, households etc.
             type: String,
             unique: true,
             trim: true,
             minLength: 3,
             maxLength: 40,
             lowercase: true,
+        },
+        isEdible: {
+            type: Boolean,
         },
         icon: {
             type: String,
@@ -26,4 +29,4 @@ const foodCategorySchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-module.exports = mongoose.model("Food-Category", foodCategorySchema);
+module.exports = mongoose.model("Grocery-Category", groceryCategorySchema);
