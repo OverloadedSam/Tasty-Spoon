@@ -1,17 +1,17 @@
 const mongoose = require("mongoose");
-const FoodCategory = require("../models/foodCategory"); // Model
-const { foodCategoryValidator } = require("../helpers/dataValidation");
+const GroceryCategory = require("../models/groceryCategory"); // Model
+const { groceryCategoryValidator } = require("../helpers/dataValidation");
 
-// Get food categories [READ]
-const getFoodCategory = async (req, res) => {
+// Get grocery categories [READ]
+const getGroceryCategory = async (req, res) => {
     try {
-        var response = await FoodCategory.find();
+        var response = await GroceryCategory.find();
     } catch (error) {
-        console.log("Some error  ocurred in promise");
+        console.log("Some error ocurred in promise");
         console.log(error);
         return res.status(400).json({
             status: 400,
-            message: "Bad request can not get food categories",
+            message: "Bad request can not get grocery categories",
         });
     }
     return res.status(200).json({
@@ -20,9 +20,9 @@ const getFoodCategory = async (req, res) => {
     });
 };
 
-// Post the food category [CREATE]
-const postFoodCategory = async (req, res) => {
-    const { value, error } = foodCategoryValidator(req.body); // Validate input data.
+// Post the grocery category [CREATE]
+const postGroceryCategory = async (req, res) => {
+    const { value, error } = groceryCategoryValidator(req.body); // Validate input data.
 
     // If data is invalid then return ValidationError in response.
     if (error) {
@@ -34,16 +34,17 @@ const postFoodCategory = async (req, res) => {
     }
 
     // Make new object to save it in DB.
-    const foodCategory = new FoodCategory({
+    const groceryCategory = new GroceryCategory({
         id: req.body.id,
         name: req.body.name,
+        isEdible: req.body.isEdible,
         icon: req.body.icon,
     });
 
     try {
-        var savedResponse = await foodCategory.save(); // Create in DB asynchronously.
+        var savedResponse = await groceryCategory.save(); // Create in DB asynchronously.
     } catch (error) {
-        console.log("Error in posting food category");
+        console.log("Error in posting grocery category");
         console.log(error);
         return res.status(500).json({
             status: 500,
@@ -60,4 +61,4 @@ const postFoodCategory = async (req, res) => {
     });
 };
 
-module.exports = { getFoodCategory, postFoodCategory };
+module.exports = { getGroceryCategory, postGroceryCategory };

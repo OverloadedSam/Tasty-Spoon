@@ -1,17 +1,19 @@
 const mongoose = require("mongoose");
-const FoodItem = require("../models/foodItem");
-const { foodItemValidator } = require("../helpers/dataValidation");
+const Product = require("../models/product");
+const { productValidator } = require("../helpers/dataValidation");
 
 // Get food/meals [READ]
-const getFoodItems = async (req, res) => {
+const getProducts = async (req, res) => {
     try {
-        var response = await FoodItem.find(); // Read all food-items from the DB.
+        var response = await Product.find().populate({
+            path: "category"
+        }); // Read all food-items from the DB.
     } catch (error) {
         console.log("Some error  ocurred in promise");
         console.log(error);
         return res.status(400).json({
             status: 400,
-            message: "Bad request can not get the food items",
+            message: "Bad request can not get the products",
         });
     }
 
@@ -23,10 +25,10 @@ const getFoodItems = async (req, res) => {
 };
 
 // Post food/meals [CREATE]
-const postFoodItems = async (req, res) => {
+const postProducts = async (req, res) => {
 
     // validate food-items input data.
-    const { value, error } = foodItemValidator(req.body);
+    const { value, error } = productValidator(req.body);
     if (error) {
         return res.status(406).json({
             status: 406,
@@ -36,7 +38,7 @@ const postFoodItems = async (req, res) => {
     }
 
     // Create an object to save/create it in DB.
-    const foodItem = new FoodItem({
+    const foodItem = new Product({
         itemName: req.body.itemName,
         description: req.body.description,
         richDescription: req.body.richDescription,
@@ -46,10 +48,17 @@ const postFoodItems = async (req, res) => {
         category: req.body.category,
         rating: req.body.rating,
         isFeatured: req.body.isFeatured,
+        isVeg: req.body.isVeg,
+        tags: req.body.tags,
+        brand: req.body.brand,
+        productType: req.body.productType,
+        ingredients: req.body.ingredients,
+        quantity: req.body.quantity,
+
     });
 
     try {
-        var savedResponse = await foodItem.save(); // Create the food-item in DB asynchronously.
+        var savedResponse = await foodItem.save(); // Create the product in DB asynchronously.
     } catch (error) {
         console.log("Error in posting food item");
         console.log(error);
@@ -68,4 +77,4 @@ const postFoodItems = async (req, res) => {
     });
 };
 
-module.exports = { getFoodItems, postFoodItems };
+module.exports = { getProducts, postProducts };
