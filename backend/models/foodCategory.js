@@ -17,6 +17,7 @@ const foodCategorySchema = new mongoose.Schema(
             minLength: 3,
             maxLength: 40,
             lowercase: true,
+            require: true,
         },
         icon: {
             type: String,

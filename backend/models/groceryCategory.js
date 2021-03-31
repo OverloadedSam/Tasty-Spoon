@@ -17,6 +17,7 @@ const groceryCategorySchema = new mongoose.Schema(
             minLength: 3,
             maxLength: 40,
             lowercase: true,
+            require: true,
         },
         isEdible: {
             type: Boolean,

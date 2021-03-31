@@ -82,6 +82,7 @@ const productSchema = new mongoose.Schema(
             // Weights or pieces
             type: String,
             maxLength: 30,
+            require: true,
         },
     },
     { timestamps: true }
