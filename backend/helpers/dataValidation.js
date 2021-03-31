@@ -4,7 +4,7 @@ const foodCategoryValidator = (data) => {
     // Validation Schema for food-categories
     const schema = Joi.object({
         id: Joi.number().min(1).required(),
-        name: Joi.string().min(3).max(50),
+        name: Joi.string().min(3).max(50).required(),
         icon: Joi.string().min(2).max(40),
     });
 
@@ -15,7 +15,7 @@ const groceryCategoryValidator = (data) => {
     // Validation Schema for grocery-categories
     const schema = Joi.object({
         id: Joi.number().min(1).max(10000).required(),
-        name: Joi.string().min(3).max(50),
+        name: Joi.string().min(3).max(50).required(),
         isEdible: Joi.bool(),
         icon: Joi.string().min(2).max(40),
     });
@@ -43,6 +43,7 @@ const productValidator = (data) => {
         tags: Joi.array().items(Joi.string()),
         brand: Joi.string().min(2).max(30),
         productType: Joi.string()
+            .required()
             .min(4)
             .max(40)
             .pattern(new RegExp("Food|Grocery(?=-Category)")),
