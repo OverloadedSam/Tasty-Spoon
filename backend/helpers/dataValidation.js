@@ -57,7 +57,7 @@ const productValidator = (data) => {
 const userValidator = (data) => {
     // Validation Schema for users
     const schema = Joi.object({
-        name: Joi.string()
+        firstName: Joi.string()
             .pattern(new RegExp("^[A-Za-z]+$"))
             .min(3)
             .max(31)

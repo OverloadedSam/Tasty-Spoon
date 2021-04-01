@@ -32,7 +32,7 @@ const getUserById = async (req, res) => {
 
     const {
         _id,
-        name,
+        firstName,
         address,
         phone,
         email,
@@ -46,7 +46,7 @@ const getUserById = async (req, res) => {
         status: 200,
         data: {
             _id,
-            name,
+            firstName,
             address,
             phone,
             email,
@@ -71,7 +71,7 @@ const postUser = async (req, res) => {
 
     // Make an object to create an user in DB
     const user = new User({
-        name: req.body.name,
+        firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
         passwordHash: bcryptjs.hashSync(
@@ -95,13 +95,13 @@ const postUser = async (req, res) => {
         });
     }
 
-    const { name, lastName, email, phone } = response;
+    const { firstName, lastName, email, phone } = response;
 
     // Send success in response.
     return res.status(201).json({
         status: 201,
         message: "User has been created in the DB",
-        name,
+        firstName,
         lastName,
         email,
         phone,
