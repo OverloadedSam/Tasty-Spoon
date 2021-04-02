@@ -108,4 +108,26 @@ const postUser = async (req, res) => {
     });
 };
 
-module.exports = { getUsers, postUser, getUserById };
+// Put/Update user in DB by specifying an id.
+const putUserById = async (req, res) => {
+    let dataToBeUpdated = req.body;
+    try {
+        const isUpdate = await User.findByIdAndUpdate(
+            req.params.id,
+            dataToBeUpdated,
+            {
+                new: true,
+                useFindAndModify: false,
+            }
+        );
+        if (isUpdate)
+            return res.status(200).json({
+                message: "Successfully updated the data",
+                updatedData: { ...dataToBeUpdated },
+            });
+    } catch (error) {
+        console.log("Some error ocurred!");
+        console.log(error);
+    }
+};
+module.exports = { getUsers, postUser, getUserById, putUserById };
