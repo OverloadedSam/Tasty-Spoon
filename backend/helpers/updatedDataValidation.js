@@ -14,7 +14,7 @@ const userDataUpdateValidator = (data) => {
         password: Joi.string().min(6).max(30),
         address: Joi.string().min(10).max(400),
         phone: Joi.string().pattern(new RegExp("[6-9]{1}[0-9]{9}")),
-        privileges: Joi.number().default(0),
+        privileges: Joi.number().default(0).min(0),
     });
     return ({ value, error } = schema.validate(data));
 };
