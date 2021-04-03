@@ -1,6 +1,7 @@
 const bcryptjs = require("bcryptjs");
 const User = require("../models/user");
 const { userValidator } = require("../helpers/dataValidation");
+const { userDataUpdateValidator } = require("../helpers/updatedDataValidation");
 
 // Get all users from the DB [READ].
 const getUsers = async (req, res) => {
@@ -111,6 +112,16 @@ const postUser = async (req, res) => {
 // Put/Update user in DB by specifying an id.
 const putUserById = async (req, res) => {
     let dataToBeUpdated = req.body;
+
+    // Updated data validation for User, returns error if invalid.
+    const { error } = userDataUpdateValidator(req.body);
+    if (error) {
+        return res.status(400).json({
+            message: "Please provide correct details",
+            error,
+        });
+    }
+
     try {
         // Finds email whether it exists in DB.
         if (dataToBeUpdated.email) {
