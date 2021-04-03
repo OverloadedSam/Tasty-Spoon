@@ -112,6 +112,40 @@ const postUser = async (req, res) => {
 const putUserById = async (req, res) => {
     let dataToBeUpdated = req.body;
     try {
+        // Finds email whether it exists in DB.
+        if (dataToBeUpdated.email) {
+            const emailFound = await User.findOne({
+                email: dataToBeUpdated.email,
+            });
+            if (emailFound && emailFound._id == req.params.id) {
+                return res.status(400).json({
+                    message: "Please provide new e-mail address",
+                });
+            }
+            if (emailFound && emailFound._id != req.params.id) {
+                return res.status(400).json({
+                    message: `E-mail ${emailFound.email} has been already registered with other account`,
+                });
+            }
+        }
+        // Finds phone whether it exists in DB.
+        if (dataToBeUpdated.phone) {
+            const phoneFound = await User.findOne({
+                phone: dataToBeUpdated.phone,
+            });
+            if (phoneFound && phoneFound._id == req.params.id) {
+                return res.status(400).json({
+                    message: "Please provide new phone number",
+                });
+            }
+            if (phoneFound && phoneFound._id != req.params.id) {
+                return res.status(400).json({
+                    message: `Phone ${phoneFound.phone} has been already registered with other account`,
+                });
+            }
+        }
+
+        // Asynchronously updates the only data that is coming in request.
         const isUpdate = await User.findByIdAndUpdate(
             req.params.id,
             dataToBeUpdated,
@@ -120,6 +154,8 @@ const putUserById = async (req, res) => {
                 useFindAndModify: false,
             }
         );
+
+        // Send success in response.
         if (isUpdate)
             return res.status(200).json({
                 message: "Successfully updated the data",
@@ -128,6 +164,11 @@ const putUserById = async (req, res) => {
     } catch (error) {
         console.log("Some error ocurred!");
         console.log(error);
+        return res.status(500).json({
+            message:
+                "Some error ocurred while processing your request please provide correct details",
+            error,
+        });
     }
 };
 module.exports = { getUsers, postUser, getUserById, putUserById };
