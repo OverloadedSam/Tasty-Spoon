@@ -1,12 +1,13 @@
 const mongoose = require("mongoose");
 const Product = require("../models/product");
 const { productValidator } = require("../helpers/dataValidation");
+const { findByIdAndDelete } = require("../models/product");
 
 // Get food/meals [READ]
 const getProducts = async (req, res) => {
     try {
         var response = await Product.find().populate({
-            path: "category"
+            path: "category",
         }); // Read all food-items from the DB.
     } catch (error) {
         console.log("Some error  ocurred in promise");
@@ -26,7 +27,6 @@ const getProducts = async (req, res) => {
 
 // Post food/meals [CREATE]
 const postProducts = async (req, res) => {
-
     // validate food-items input data.
     const { value, error } = productValidator(req.body);
     if (error) {
@@ -54,7 +54,6 @@ const postProducts = async (req, res) => {
         productType: req.body.productType,
         ingredients: req.body.ingredients,
         quantity: req.body.quantity,
-
     });
 
     try {
@@ -77,4 +76,33 @@ const postProducts = async (req, res) => {
     });
 };
 
-module.exports = { getProducts, postProducts };
+// Delete a product by specifying an id.
+const deleteProductById = async (req, res) => {
+    try {
+        const productFound = await Product.findByIdAndDelete(req.params.id);
+        if (!productFound) {
+            return res.status(404).json({
+                message:
+                    "ID you provided did not found. please specify correct id",
+            });
+        }
+        if (productFound) {
+            return res.status(200).json({
+                message: "Product deleted successfully",
+                productFound,
+            });
+        }
+    } catch (error) {
+        console.log(
+            "Some error ocurred may be because of invalid format for product id"
+        );
+        console.log(error);
+        return res.status(500).json({
+            message:
+                "Something went wrong. Maybe invalid product id. Please provide correct product id",
+            error,
+        });
+    }
+};
+
+module.exports = { getProducts, postProducts, deleteProductById };
