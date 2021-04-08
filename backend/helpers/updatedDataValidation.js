@@ -19,4 +19,32 @@ const userDataUpdateValidator = (data) => {
     return ({ value, error } = schema.validate(data));
 };
 
-module.exports = { userDataUpdateValidator };
+const productDataUpdateValidator = (data) => {
+    const schema = Joi.object({
+        itemName: Joi.string()
+            .min(3)
+            .max(50)
+            .pattern(new RegExp("^[A-Za-z ]+$")),
+        description: Joi.string().min(5).max(300),
+        richDescription: Joi.array().items(Joi.string()),
+        image: Joi.string(),
+        imageArray: Joi.array().items(Joi.string()),
+        price: Joi.number().min(20).max(10000),
+        category: Joi.string().alphanum(),
+        rating: Joi.number().min(0).max(5),
+        isFeatured: Joi.bool(),
+        isVeg: Joi.bool(),
+        tags: Joi.array().items(Joi.string()),
+        brand: Joi.string().min(2).max(30),
+        productType: Joi.string()
+            .min(4)
+            .max(40)
+            .pattern(new RegExp("Food|Grocery(?=-Category)")),
+        ingredients: Joi.array().items(Joi.string()),
+        quantity: Joi.string().max(30),
+    });
+
+    return ({ value, error } = schema.validate(data));
+};
+
+module.exports = { userDataUpdateValidator, productDataUpdateValidator };
