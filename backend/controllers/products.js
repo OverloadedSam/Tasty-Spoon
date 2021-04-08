@@ -5,7 +5,7 @@ const {
     productDataUpdateValidator,
 } = require("../helpers/updatedDataValidation");
 
-// Get food/meals [READ]
+// Get all Products [READ]
 const getProducts = async (req, res) => {
     try {
         var response = await Product.find().populate({
@@ -27,7 +27,7 @@ const getProducts = async (req, res) => {
     });
 };
 
-// Get/Read product by specifying an id
+// Get/Read Product by specifying an id
 const getProductById = async (req, res) => {
     try {
         const productData = await Product.findById(req.params.id).populate({
@@ -58,7 +58,7 @@ const getProductById = async (req, res) => {
     }
 };
 
-// Post food/meals [CREATE]
+// Post Product [CREATE]
 const postProducts = async (req, res) => {
     // validate food-items input data.
     const { value, error } = productValidator(req.body);
@@ -109,28 +109,37 @@ const postProducts = async (req, res) => {
     });
 };
 
-// Delete a product by specifying an id.
+// Delete a product by specifying an id. [DELETE]
 const deleteProductById = async (req, res) => {
     try {
         const productFound = await Product.findByIdAndDelete(req.params.id);
+        // Returns false in response if product is not found.
         if (!productFound) {
-            return res.status(404).json({
+            return res
+            .status(404)
+            .json({
+                success: false,
                 message:
-                    "ID you provided did not found. please specify correct id",
+                "ID you provided did not found. please specify correct id",
             });
         }
+
+        // Returns success in response if product is found.
         if (productFound) {
             return res.status(200).json({
+                success: true,
                 message: "Product deleted successfully",
-                productFound,
+                deletedProduct: productFound,
             });
         }
     } catch (error) {
+        // Catches error if id is invalid, incorrect or some other error raise.
         console.log(
             "Some error ocurred may be because of invalid format for product id"
         );
         console.log(error);
         return res.status(500).json({
+            success: false,
             message:
                 "Something went wrong. Maybe invalid product id. Please provide correct product id",
             error,
@@ -138,7 +147,7 @@ const deleteProductById = async (req, res) => {
     }
 };
 
-// Put/Update a product in DB by specifying an id.
+// Put/Update a product in DB by specifying an id. [PUT]
 const putProductById = async (req, res) => {
     const dataToBeUpdated = req.body;
 
