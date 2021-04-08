@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const Product = require("../models/product");
 const { productValidator } = require("../helpers/dataValidation");
-const { findByIdAndDelete } = require("../models/product");
+const {
+    productDataUpdateValidator,
+} = require("../helpers/updatedDataValidation");
 
 // Get food/meals [READ]
 const getProducts = async (req, res) => {
@@ -105,4 +107,55 @@ const deleteProductById = async (req, res) => {
     }
 };
 
-module.exports = { getProducts, postProducts, deleteProductById };
+// Put/Update a product in DB by specifying an id.
+const putProductById = async (req, res) => {
+    const dataToBeUpdated = req.body;
+
+    // Updated data validation for Product, returns error if invalid.
+    const { error } = productDataUpdateValidator(dataToBeUpdated);
+    if (error) {
+        return res.status(400).json({
+            success: false,
+            message: "Please provide correct data format",
+            error,
+        });
+    }
+
+    try {
+        const productFound = await Product.findById(req.params.id);
+        if (!productFound) {
+            // If product id doesn't exist then returns response with 404.
+            return res.status(404).json({
+                success: false,
+                message: "Product id not found please provide correct id",
+            });
+        }
+
+        // Updates product by giving an id and returns success response.
+        const updateProduct = await Product.findByIdAndUpdate(
+            req.params.id,
+            dataToBeUpdated,
+            { new: true, useFindAndModify: false }
+        );
+        return res.status(200).json({
+            success: true,
+            message: "Product information updated successfully",
+            updatedData: updateProduct,
+        });
+    } catch (error) {
+        // Catches errors if mongoDB ObjectId is invalid.
+        return res.status(500).json({
+            success: false,
+            message:
+                "Something went wrong while updating, could not update the product information",
+            error,
+        });
+    }
+};
+
+module.exports = {
+    getProducts,
+    postProducts,
+    deleteProductById,
+    putProductById,
+};
