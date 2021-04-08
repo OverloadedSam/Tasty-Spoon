@@ -27,6 +27,37 @@ const getProducts = async (req, res) => {
     });
 };
 
+// Get/Read product by specifying an id
+const getProductById = async (req, res) => {
+    try {
+        const productData = await Product.findById(req.params.id).populate({
+            path: "category",
+        }); // Read only one product using given id.
+
+        // Returns false in response if product is not found.
+        if (!productData) {
+            return res.status(404).json({
+                success: false,
+                message: "Id doesn't exist. Please provide correct product id",
+            });
+        }
+
+        // Returns response with data if product is found.
+        return res.status(200).json({
+            success: true,
+            productData,
+        });
+    } catch (error) {
+        // Catches errors if id is invalid, or some other issue raise.
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message:
+                "Could not find product! product id is not valid. please provide correct id",
+        });
+    }
+};
+
 // Post food/meals [CREATE]
 const postProducts = async (req, res) => {
     // validate food-items input data.
@@ -158,4 +189,5 @@ module.exports = {
     postProducts,
     deleteProductById,
     putProductById,
+    getProductById,
 };
