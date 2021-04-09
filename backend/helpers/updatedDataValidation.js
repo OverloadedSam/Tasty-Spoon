@@ -47,7 +47,7 @@ const productDataUpdateValidator = (data) => {
     return ({ value, error } = schema.validate(data));
 };
 
-const groceryDataUpdateValidator =(data) => {
+const groceryDataUpdateValidator = (data) => {
     const schema = Joi.object({
         id: Joi.number().min(1).max(10000),
         name: Joi.string().min(3).max(50),
@@ -56,6 +56,20 @@ const groceryDataUpdateValidator =(data) => {
     });
 
     return ({ value, error } = schema.validate(data));
-}
+};
 
-module.exports = { userDataUpdateValidator, productDataUpdateValidator, groceryDataUpdateValidator };
+const foodDataUpdateValidator = (data) => {
+    const schema = Joi.object({
+        id: Joi.number().min(1),
+        name: Joi.string().min(3).max(50),
+        icon: Joi.string().min(2).max(40),
+    });
+
+    return ({ value, error } = schema.validate(data));
+};
+module.exports = {
+    userDataUpdateValidator,
+    productDataUpdateValidator,
+    groceryDataUpdateValidator,
+    foodDataUpdateValidator,
+};
