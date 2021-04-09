@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const FoodCategory = require("../models/foodCategory"); // Model
 const { foodCategoryValidator } = require("../helpers/dataValidation");
+const { foodDataUpdateValidator } = require("../helpers/updatedDataValidation");
 
 // Get food categories [READ]
 const getFoodCategory = async (req, res) => {
@@ -60,4 +61,50 @@ const postFoodCategory = async (req, res) => {
     });
 };
 
-module.exports = { getFoodCategory, postFoodCategory };
+// Put/Update food category [UPDATE]
+const putFoodCategory = async (req, res) => {
+    const dataToBeUpdated = req.body;
+    // Updated data validation for Food-Category, returns error if invalid.
+    const { error } = foodDataUpdateValidator(dataToBeUpdated);
+    if (error) {
+        return res.status(400).json({
+            success: false,
+            message: "Please provide correct data for food category",
+            error,
+        });
+    }
+    try {
+        // Updates Food-Category asynchronously.
+        const updateCategory = await FoodCategory.findByIdAndUpdate(
+            req.params.id,
+            dataToBeUpdated,
+            { new: true, useFindAndModify: false }
+        );
+
+        // Return false in success if id is not found.
+        if (!updateCategory) {
+            return res.status(404).json({
+                success: false,
+                message: "Id not found please provide correct id",
+            });
+        }
+
+        // Updates data in DB and Returns true in success if everything is ok.
+        return res.status(200).json({
+            success: true,
+            message: `Food category information for id ${updateCategory._id} has been updated`,
+            data: updateCategory,
+        });
+    } catch (error) {
+        console.log("Some error ocurred");
+        console.log(error);
+        // Catches errors if mongoDB ObjectId is invalid or some other error raise.
+        return res.status(500).json({
+            success: false,
+            message: "Invalid id or id is incorrect. please provide correct id",
+            error,
+        });
+    }
+};
+
+module.exports = { getFoodCategory, postFoodCategory, putFoodCategory };
