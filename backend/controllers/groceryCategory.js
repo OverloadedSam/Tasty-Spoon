@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 const GroceryCategory = require("../models/groceryCategory"); // Model
 const { groceryCategoryValidator } = require("../helpers/dataValidation");
+const {
+    groceryDataUpdateValidator,
+} = require("../helpers/updatedDataValidation");
+const { update } = require("../models/groceryCategory");
 
 // Get grocery categories [READ]
 const getGroceryCategory = async (req, res) => {
@@ -61,4 +65,54 @@ const postGroceryCategory = async (req, res) => {
     });
 };
 
-module.exports = { getGroceryCategory, postGroceryCategory };
+// Put/Update grocery category [UPDATE]
+const putGroceryCategory = async (req, res) => {
+    const dataToBeUpdated = req.body;
+    // Updated data validation for Grocery-Category, returns error if invalid.
+    const { error } = groceryDataUpdateValidator(dataToBeUpdated);
+    if (error) {
+        return res.status(400).json({
+            success: false,
+            message: "Please provide correct data for grocery category",
+            error,
+        });
+    }
+    try {
+        // Updates Grocery-Category asynchronously.
+        const updateCategory = await GroceryCategory.findByIdAndUpdate(
+            req.params.id,
+            dataToBeUpdated,
+            { new: true, useFindAndModify: false }
+        );
+
+        // Return false in success if id is not found.
+        if (!updateCategory) {
+            return res.status(404).json({
+                success: false,
+                message: "Id not found please provide correct id",
+            });
+        }
+
+        // Updates data in DB and Returns true in success if everything is ok.
+        return res.status(200).json({
+            success: true,
+            message: `Grocery category information for id ${updateCategory._id} has been updated`,
+            data: updateCategory,
+        });
+    } catch (error) {
+        console.log("Some error ocurred");
+        console.log(error);
+        // Catches errors if mongoDB ObjectId is invalid or some other error raise.
+        return res.status(500).json({
+            success: false,
+            message: "Invalid id or id is incorrect. please provide correct id",
+            error,
+        });
+    }
+};
+
+module.exports = {
+    getGroceryCategory,
+    postGroceryCategory,
+    putGroceryCategory,
+};
