@@ -1,6 +1,8 @@
 const express = require("express");
 const server = express();
 const mongoose = require("mongoose");
+const jwtAuth = require("./helpers/authentication");
+const errorHandler = require("./helpers/errorHandler")
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require("dotenv/config");
@@ -20,6 +22,7 @@ const usersRoutes = require("./routes/users");
 server.use(morgan("tiny"));
 server.use(bodyParser.json());
 server.use(cors());
+server.use(jwtAuth());
 
 // Database connection
 mongoose
@@ -46,6 +49,8 @@ server.use(api, groceryItemCategoryRoutes); // for grocery category
 server.use(api, signupRoutes);
 server.use(api, signInRoutes);
 server.use(api, usersRoutes);
+
+server.use(errorHandler); // Custom error handler middleware.
 
 server.get(api, (req, res) => {
     res.send("You got the response");
