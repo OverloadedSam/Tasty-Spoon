@@ -15,7 +15,7 @@ const registerUser = async (req, res) => {
 
     // Make an object to create an user in DB
     const user = new User({
-        name: req.body.name,
+        firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
         passwordHash: bcryptjs.hashSync(
@@ -39,13 +39,13 @@ const registerUser = async (req, res) => {
         });
     }
 
-    const { name, lastName, email, phone } = response; // send only general data don[t send passwords.
+    const { firstName, lastName, email, phone } = response; // send only general data don[t send passwords.
 
     // Send success in response.
     return res.status(201).json({
         status: 201,
         message: "User has been created in the DB",
-        name,
+        firstName,
         lastName,
         email,
         phone,
