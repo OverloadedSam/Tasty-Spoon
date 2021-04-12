@@ -1,0 +1,28 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito&family=Overlock:ital@1&display=swap");
+
+/* Navigation menu styling */
+.navbar {
+    background-color: #ffb037;
+}
+
+.navbar-brand {
+    font-family: "Overlock", cursive;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.nav-link,
+.navbar-brand {
+    color: #1b1a17 !important;
+}
+.navbar-item{
+    font-weight: 700;
+     font-family: "Nunito", sans-serif;
+}
+.nav-link:hover {
+    border-top: 3px solid #1b1a17;
+    border-bottom: 3px solid #171b1a;
+    transition: 215ms;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
