@@ -1,0 +1,25 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito&family=Overlock:ital@1&display=swap");
+
+html,
+body {
+    font-family: "Nunito", sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    background-color: #f5f6fa;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Overlock", cursive;
+}
+p,
+a,
+i {
+    font-family: "Nunito", sans-serif;
+}
