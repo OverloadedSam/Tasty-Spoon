@@ -1,11 +1,12 @@
 import React from "react";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import NavMenu from "./components/NavMenu";
 
 function App() {
     return (
         <div className="App">
-            <h1>Frontend has started!</h1>
+            <NavMenu />
         </div>
     );
 }
