@@ -1,1 +1,22 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito&family=Overlock:ital@1&display=swap");
+
+/* .jumbotron{
+    width: 100vw;
+    height: 100vh;
+} */
+
+/* Inner content of the Jumbotron text button etc. */
+.bg-img-content {
+    font-family: "Nunito", sans-serif;
+    height: 80vh;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-shadow: 3px -4px 3px #000000;
+}
+
+.bg-img-content p {
+    font-size: 1.1rem;
+}
