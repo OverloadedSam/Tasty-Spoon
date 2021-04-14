@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import NavMenu from "./components/NavMenu";
 import BgHome from "./components/BgHome";
 import Featurette from "./components/Featurette";
+import ChooseUs from "./components/ChooseUs";
 import Container from "react-bootstrap/Container";
 
 function App() {
@@ -31,6 +32,8 @@ function App() {
                     contentOrder="1"
                 />
             </Container>
+
+            <ChooseUs />
         </div>
     );
 }

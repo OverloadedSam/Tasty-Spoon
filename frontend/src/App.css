@@ -20,3 +20,12 @@
 .bg-img-content p {
     font-size: 1.1rem;
 }
+
+/* Headings e.g why choose us etc */
+.home-main-heading {
+    border-bottom: 4px solid #ffb037;
+    border-radius: 10px;
+}
+.home-main-heading span {
+    color: #17a2b8;
+}
