@@ -6,6 +6,7 @@ import BgHome from "./components/BgHome";
 import Featurette from "./components/Featurette";
 import ChooseUs from "./components/ChooseUs";
 import ProfileCard from "./components/ProfileCard";
+import Footer from "./components/Footer";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 
@@ -60,6 +61,7 @@ function App() {
                     />
                 </Row>
             </Container>
+            <Footer />
         </div>
     );
 }

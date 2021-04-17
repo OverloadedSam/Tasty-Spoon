@@ -130,3 +130,12 @@
     text-decoration: none;
     transition: 500ms;
 }
+
+/* Footer styling */
+footer .footer-links p a {
+    color: #fff;
+}
+footer .footer-links p a:hover {
+    color: #17a2b8;
+    text-decoration: none;
+}
