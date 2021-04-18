@@ -14,6 +14,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.bg-img-content h1,
+.bg-img-content p {
     text-shadow: 3px -4px 3px #000000;
 }
 

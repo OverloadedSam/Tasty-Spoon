@@ -1,5 +1,6 @@
 import React from "react";
 import "../App.css";
+import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import Container from "react-bootstrap/Container";
@@ -10,7 +11,7 @@ const BgHome = () => {
             <Container fluid className="p-0">
                 <Jumbotron
                     style={{
-                        background: `url("assets/images/hero-background/hero-${Math.ceil(
+                        backgroundImage: `url("assets/images/hero-background/hero-${Math.ceil(
                             Math.random() * 7
                         )}.jpg")`,
                         backgroundRepeat: "no-repeat",
@@ -31,20 +32,24 @@ const BgHome = () => {
                             Life transforming, plant-rich super meals delivered
                             to your doorstep.
                         </p>
-                        <p>
+                        <div className="d-flex justify-content-center align-items-center">
                             <Button
+                                as={Link}
+                                to="/meal"
                                 variant="info"
                                 className="m-2 rounded-pill "
                             >
                                 Get Meals
                             </Button>
                             <Button
+                                as={Link}
+                                to="/grocery"
                                 variant="outline-info"
                                 className="m-2 rounded-pill border-light text-light"
                             >
                                 Get Grocery
                             </Button>
-                        </p>
+                        </div>
                     </div>
                 </Jumbotron>
             </Container>
