@@ -10,7 +10,7 @@ const Featurette = (props) => {
             <Row className="d-flex justify-content-center align-items-center py-4">
                 <Col md={7} className={`order-md-${props.contentOrder}`}>
                     <h2 className="featurette-heading text-info">
-                        Bread Omlet Salsa.{" "}
+                        Bread Omelette Salsa.{" "}
                         <span className="text-muted">
                             It’ll blow your mind.
                         </span>
