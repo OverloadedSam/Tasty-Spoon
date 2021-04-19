@@ -32,7 +32,7 @@ const productSchema = new mongoose.Schema(
             type: [String],
         },
         price: {
-            // if the prices are more than 1000 taxes and duties may be imposed
+            // if the prices are more than 10000 taxes and duties may be imposed
             type: Number,
             require: true,
             min: 20,
@@ -84,6 +84,12 @@ const productSchema = new mongoose.Schema(
             maxLength: 30,
             require: true,
         },
+        stockCount: {
+            type: Number,
+            require: true,
+            min: 0,
+            max: 30
+        }
     },
     { timestamps: true }
 );

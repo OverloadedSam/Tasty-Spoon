@@ -87,6 +87,7 @@ const postProducts = async (req, res) => {
         productType: req.body.productType,
         ingredients: req.body.ingredients,
         quantity: req.body.quantity,
+        stockCount: req.body.stockCount,
     });
 
     try {
@@ -115,12 +116,10 @@ const deleteProductById = async (req, res) => {
         const productFound = await Product.findByIdAndDelete(req.params.id);
         // Returns false in response if product is not found.
         if (!productFound) {
-            return res
-            .status(404)
-            .json({
+            return res.status(404).json({
                 success: false,
                 message:
-                "ID you provided did not found. please specify correct id",
+                    "ID you provided did not found. please specify correct id",
             });
         }
 
