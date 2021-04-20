@@ -46,6 +46,10 @@ const userSignIn = async (req, res) => {
             return res.status(200).header("auth-user", token).json({
                 success: true,
                 message: "Logged in successfully!",
+                userId: userFound._id,
+                userEmail: userFound.email,
+                userFirstName: userFound.firstName,
+                userLastName: userFound.lastName,
                 token,
             });
         } else {
