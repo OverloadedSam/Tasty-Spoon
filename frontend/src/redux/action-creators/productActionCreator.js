@@ -24,3 +24,28 @@ export const prodListFail = (error) => {
         },
     };
 };
+
+export const prodDetailReq = () => {
+    return {
+        type: actions.PRODUCT_DETAILS_REQUESTED,
+    };
+};
+
+export const prodDetailSuccess = (data) => {
+    return {
+        type: actions.PRODUCT_DETAILS_SUCCEEDED,
+        payload: { data },
+    };
+};
+
+export const prodDetailFail = (error) => {
+    return {
+        type: actions.PRODUCT_DETAILS_FAILED,
+        payload: {
+            errorMsg:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        },
+    };
+};

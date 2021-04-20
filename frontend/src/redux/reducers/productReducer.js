@@ -16,3 +16,24 @@ export const productListReducer = (state = prodListInitState, action) => {
             return state;
     }
 };
+
+const prodDetailInitState = { loading: false, error: false, product: {} };
+export const productDetailsReducer = (state = prodDetailInitState, action) => {
+    switch (action.type) {
+        case actions.PRODUCT_DETAILS_REQUESTED:
+            return { ...state, loading: true };
+
+        case actions.PRODUCT_DETAILS_SUCCEEDED:
+            return {
+                ...state,
+                loading: false,
+                product: action.payload.data,
+            };
+
+        case actions.PRODUCT_DETAILS_FAILED:
+            return { ...state, loading: false, error: action.payload.errorMsg };
+
+        default:
+            return state;
+    }
+};

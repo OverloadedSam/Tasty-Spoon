@@ -2,6 +2,9 @@ import {
     prodListReq,
     prodListSuccess,
     prodListFail,
+    prodDetailReq,
+    prodDetailSuccess,
+    prodDetailFail,
 } from "../action-creators/productActionCreator";
 import axios from "axios";
 
@@ -18,5 +21,19 @@ export const listProducts = () => async (dispatch) => {
         dispatch(prodListSuccess(data));
     } catch (error) {
         dispatch(prodListFail(error));
+    }
+};
+
+// Details of an product based on id
+export const listProductDetails = (id) => async (dispatch) => {
+    try {
+        dispatch(prodDetailReq());
+
+        let { data } = await axios.get(`${apiUrl}/product/${id}`);
+        data = data.productData;
+
+        dispatch(prodDetailSuccess(data));
+    } catch (error) {
+        dispatch(prodDetailFail(error));
     }
 };
