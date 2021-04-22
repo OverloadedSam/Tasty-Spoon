@@ -166,3 +166,12 @@ button:disabled {
     transition: 1s;
     box-shadow: 0 0 8px 2px #17a2b8;
 }
+
+/* Product detail screen styling */
+.product-detail-section {
+    height: 80vh;
+}
+
+.product-detail-section::-webkit-scrollbar {
+    display: none;
+}
