@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import HomeScreen from "./screens/HomeScreen";
 import Meals from "./components/Meals";
+import ProductDetailsScreen from "./screens/ProductDetailsScreen";
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
                         <Switch>
                             <Route exact path="/" component={HomeScreen} />
                             <Route exact path="/meal" component={Meals} />
+                            <Route path="/productdetails/:id" component={ProductDetailsScreen} />
                         </Switch>
                     </main>
                     <Footer />
