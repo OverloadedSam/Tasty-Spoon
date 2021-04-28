@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "../css/productDetailsScreen.css";
 import Rating from "../components/Rating";
 import { useDispatch, useSelector } from "react-redux";
 import { listProductDetails } from "../redux/actions/productActions";
