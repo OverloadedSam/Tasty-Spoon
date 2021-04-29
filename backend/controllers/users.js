@@ -1,4 +1,3 @@
-const bcryptjs = require("bcryptjs");
 const User = require("../models/user");
 const { userValidator } = require("../helpers/dataValidation");
 const { userDataUpdateValidator } = require("../helpers/updatedDataValidation");
@@ -75,10 +74,7 @@ const postUser = async (req, res) => {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
-        passwordHash: bcryptjs.hashSync(
-            req.body.password,
-            Number(process.env.SALT)
-        ),
+        passwordHash: req.body.password,
         address: req.body.address,
         phone: req.body.phone,
         privileges: req.body.privileges,

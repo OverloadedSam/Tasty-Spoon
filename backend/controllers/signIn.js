@@ -1,6 +1,5 @@
-const bcryptjs = require("bcryptjs");
 const User = require("../models/user");
-const jwt = require("jsonwebtoken");
+const { generateToken } = require("../utils/generateToken");
 
 // For user login or sign-in
 const userSignIn = async (req, res) => {
@@ -26,22 +25,10 @@ const userSignIn = async (req, res) => {
         }
 
         // Matches the provided password with the original password associated with email.
-        if (
-            userFound &&
-            bcryptjs.compareSync(password, userFound.passwordHash)
-        ) {
-            // Sign/make a json web token for authentication to send it in response.
-            const token = jwt.sign(
-                {
-                    userId: userFound._id,
-                    email,
-                    logNo: userFound.privileges,
-                },
-                process.env.SECRET,
-                {
-                    expiresIn: "1d",
-                }
-            );
+        if (userFound && userFound.matchPassword(password)) {
+            const { _id, email, privileges } = userFound;
+            const token = generateToken(_id, email, privileges);
+
             // Returns the token in response.
             return res.status(200).header("auth-user", token).json({
                 success: true,
