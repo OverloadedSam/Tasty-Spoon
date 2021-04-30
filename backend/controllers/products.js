@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const Product = require("../models/product");
 const { productValidator } = require("../helpers/dataValidation");
 const {
@@ -25,6 +24,84 @@ const getProducts = async (req, res) => {
         success: true,
         data: response,
     });
+};
+
+// Get all the products that by specifying product type.
+const getByProductType = async (req, res) => {
+    try {
+        if (req.params.prodtype === "meals") {
+            var response = await Product.find({
+                productType: "Food-Category",
+            }).populate({
+                path: "category",
+            }); // Read all food-items from the DB.
+        } else if (req.params.prodtype === "groceries") {
+            var response = await Product.find({
+                productType: "Grocery-Category",
+            }).populate({
+                path: "category",
+            }); // Read all grocery-items from the DB.
+        }
+
+        if (response.length === 0) {
+            return res.status(200).json({
+                success: false,
+                status: 404,
+                message: `Nothing found in the database for ${req.params.prodtype}`,
+            });
+        }
+    } catch (error) {
+        console.log("Some error  ocurred in promise");
+        console.log(error);
+        return res.status(400).json({
+            status: 400,
+            message: "Bad request can not get the products",
+        });
+    }
+
+    // Return the food-items list in response.
+    return res.status(200).json({
+        success: true,
+        data: response,
+    });
+};
+
+// Get all the products by specifying a category and product type.
+const getProductsByCategory = async (req, res) => {
+    const prodType = req.query.pt;
+    const cat = req.query.category;
+
+    try {
+        let products = await Product.find({ productType: prodType }).populate({
+            path: "category",
+        });
+
+        if (products.length !== 0) {
+            products = products.filter((prod) => prod.category.name === cat);
+
+            if (product.length !== 0) {
+                return res.status(200).json({
+                    success: true,
+                    status: 200,
+                    data: products,
+                });
+            }
+        }
+
+        if (products.length === 0) {
+            console.log("second if");
+            return res.status(404).json({
+                success: false,
+                message: `Nothing found for category ${cat}`,
+            });
+        }
+    } catch (error) {
+        return res.status(500).json({
+            status: 500,
+            error,
+            message: error.message,
+        });
+    }
 };
 
 // Get/Read Product by specifying an id
@@ -198,4 +275,6 @@ module.exports = {
     deleteProductById,
     putProductById,
     getProductById,
+    getByProductType,
+    getProductsByCategory,
 };
