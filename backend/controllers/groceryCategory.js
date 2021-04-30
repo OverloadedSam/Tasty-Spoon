@@ -4,7 +4,6 @@ const { groceryCategoryValidator } = require("../helpers/dataValidation");
 const {
     groceryDataUpdateValidator,
 } = require("../helpers/updatedDataValidation");
-const { update } = require("../models/groceryCategory");
 
 // Get grocery categories [READ]
 const getGroceryCategory = async (req, res) => {
@@ -21,6 +20,55 @@ const getGroceryCategory = async (req, res) => {
     return res.status(200).json({
         success: true,
         data: response,
+    });
+};
+
+// Get grocery categories by specifying the id [READ]
+const getGroceryCategoryById = async (req, res) => {
+    try {
+        var response = await GroceryCategory.findById(req.params.id);
+        if (!response) {
+            throw new Error(
+                `Can not get Grocery category check the id "${req.params.id}"`
+            );
+        }
+    } catch (error) {
+        console.log("Some error ocurred in promise");
+        return res.status(400).json({
+            success: false,
+            status: 400,
+            message: error.message,
+        });
+    }
+
+    return res.status(200).json({
+        success: true,
+        category: response,
+    });
+};
+
+// Get grocery categories by specifying the name of category [READ]
+const getGroceryCategoryByName = async (req, res) => {
+    console.log("this by name is running!!!!!");
+    try {
+        var response = await GroceryCategory.findOne({ name: req.query.name });
+        if (response === null) {
+            throw new Error(
+                `There is no grocery category for name "${req.query.name}"`
+            );
+        }
+    } catch (error) {
+        console.log("Some error ocurred");
+        return res.status(404).json({
+            success: false,
+            status: 404,
+            message: error.message,
+        });
+    }
+
+    return res.status(200).json({
+        success: true,
+        category: response,
     });
 };
 
@@ -115,4 +163,6 @@ module.exports = {
     getGroceryCategory,
     postGroceryCategory,
     putGroceryCategory,
+    getGroceryCategoryById,
+    getGroceryCategoryByName,
 };
