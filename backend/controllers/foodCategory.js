@@ -21,6 +21,54 @@ const getFoodCategory = async (req, res) => {
     });
 };
 
+// Get food categories by specifying the category id [READ]
+const getFoodCategoryById = async (req, res) => {
+    try {
+        var response = await FoodCategory.findById(req.params.id);
+        if (!response) {
+            throw new Error(
+                `Can not get Food category check the id "${req.params.id}"`
+            );
+        }
+    } catch (error) {
+        console.log("Some error ocurred in promise");
+        return res.status(400).json({
+            success: false,
+            status: 400,
+            message: error.message,
+        });
+    }
+
+    return res.status(200).json({
+        success: true,
+        category: response,
+    });
+};
+
+// Get grocery categories by specifying the name of category [READ]
+const getFoodCategoryByName = async (req, res) => {
+    try {
+        var response = await FoodCategory.findOne({ name: req.query.name });
+        if (response === null) {
+            throw new Error(
+                `There is no food category for name "${req.query.name}"`
+            );
+        }
+    } catch (error) {
+        console.log("Some error ocurred");
+        return res.status(404).json({
+            success: false,
+            status: 404,
+            message: error.message,
+        });
+    }
+
+    return res.status(200).json({
+        success: true,
+        category: response,
+    });
+};
+
 // Post the food category [CREATE]
 const postFoodCategory = async (req, res) => {
     const { value, error } = foodCategoryValidator(req.body); // Validate input data.
@@ -107,4 +155,10 @@ const putFoodCategory = async (req, res) => {
     }
 };
 
-module.exports = { getFoodCategory, postFoodCategory, putFoodCategory };
+module.exports = {
+    getFoodCategory,
+    postFoodCategory,
+    putFoodCategory,
+    getFoodCategoryById,
+    getFoodCategoryByName,
+};
