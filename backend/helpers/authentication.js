@@ -1,36 +1,61 @@
-const expressJwt = require("express-jwt");
+const User = require("../models/user");
+const jwt = require("jsonwebtoken");
 
-module.exports = function jwtAuth() {
-    const api = process.env.API;
+const protect = async (req, res, next) => {
+    let token;
 
-    const tokeConfig = {
-        secret: process.env.SECRET,
-        algorithms: ["HS256"],
-        isRevoked: isRevokedCallback,
-    };
-
-    return expressJwt(tokeConfig).unless({
-        path: [
-            { url: /\/api\/v1\/products(.*)/, methods: ["GET", "OPTIONS"] },
-            { url: /\/api\/v1\/foodcategory(.*)/, methods: ["GET", "OPTIONS"] },
-            {
-                url: /\/api\/v1\/grocerycategory(.*)/,
-                methods: ["GET", "OPTIONS"],
-            },
-            { url: `${api}/signin`, methods: ["POST"] },
-            { url: `${api}/register`, methods: ["POST"] },
-        ],
-    });
-};
-
-function isRevokedCallback(req, payload, done) {
-    if (payload.logNo <= 0) {
-        console.log(
-            "Access denied! You can not access this page because you don't have the authority."
-        );
-        console.log(payload);
-        return done(null, true);
+    // When user is logged in.
+    if (
+        req.headers.authorization &&
+        req.headers.authorization.startsWith("Bearer")
+    ) {
+        token = req.headers.authorization.split(" ")[1];
     }
 
-    return done();
-}
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            status: 401,
+            message: "No authorization token was found in the request header!",
+        });
+    }
+
+    try {
+        const payload = await jwt.verify(token, process.env.SECRET); // Check if the token is valid or not.
+
+        const user = await User.findById(payload.userId); // If valid token then search the user in db.
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found with the given token",
+            });
+        }
+
+        req.user = user;
+
+        next();
+    } catch (error) {
+        return res.status(401).json({
+            success: false,
+            status: 401,
+            message: error.message,
+            error,
+        });
+    }
+};
+
+// Check if the user is admin or not.
+const admin = (req, res, next) => {
+    if (req.user && req.user.privileges > 0) {
+        next();
+    } else {
+        return res.status(401).json({
+            success: false,
+            status: 401,
+            message: "You have no authority for this route!",
+        });
+    }
+};
+
+module.exports = { protect, admin };
