@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
+const ResponseError = require("../utils/errorResponse");
 
 const protect = async (req, res, next) => {
     let token;
@@ -13,11 +14,12 @@ const protect = async (req, res, next) => {
     }
 
     if (!token) {
-        return res.status(401).json({
-            success: false,
-            status: 401,
-            message: "No authorization token was found in the request header!",
-        });
+        return next(
+            new ResponseError(
+                "No authorization token was found in the request header!",
+                401
+            )
+        );
     }
 
     try {
@@ -26,22 +28,16 @@ const protect = async (req, res, next) => {
         const user = await User.findById(payload.userId); // If valid token then search the user in db.
 
         if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: "User not found with the given token",
-            });
+            return next(
+                new ResponseError("User not found with the given token!", 401)
+            );
         }
 
         req.user = user;
 
         next();
     } catch (error) {
-        return res.status(401).json({
-            success: false,
-            status: 401,
-            message: error.message,
-            error,
-        });
+        return next(error);
     }
 };
 
@@ -50,11 +46,9 @@ const admin = (req, res, next) => {
     if (req.user && req.user.privileges > 0) {
         next();
     } else {
-        return res.status(401).json({
-            success: false,
-            status: 401,
-            message: "You have no authority for this route!",
-        });
+        return next(
+            new ResponseError("You have no authority for this route!", 401)
+        );
     }
 };
 
