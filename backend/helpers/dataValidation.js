@@ -41,6 +41,7 @@ const productValidator = (data) => {
         isFeatured: Joi.bool(),
         isVeg: Joi.bool(),
         tags: Joi.array().items(Joi.string()),
+        stockCount: Joi.number().min(0).max(30),
         brand: Joi.string().min(2).max(30),
         productType: Joi.string()
             .required()
@@ -49,7 +50,7 @@ const productValidator = (data) => {
             .pattern(new RegExp("Food|Grocery(?=-Category)")),
         ingredients: Joi.array().items(Joi.string()),
         quantity: Joi.string().max(30),
-        stockCount: Joi.number().min(0).max(30)
+        stockCount: Joi.number().min(0).max(30),
     });
 
     return ({ value, error } = schema.validate(data));
@@ -60,18 +61,23 @@ const userValidator = (data) => {
     const schema = Joi.object({
         firstName: Joi.string()
             .pattern(new RegExp("^[A-Za-z]+$"))
+            .trim()
             .min(3)
             .max(31)
             .required(),
         lastName: Joi.string()
             .pattern(new RegExp("^[A-Za-z]+$"))
+            .trim()
             .min(2)
             .max(31)
             .required(),
         email: Joi.string().email().required(),
         password: Joi.string().required().min(6).max(30),
-        address: Joi.string().min(10).max(400),
-        phone: Joi.string().pattern(new RegExp("[6-9]{1}[0-9]{9}")),
+        address: Joi.string().trim().min(10).max(400),
+        phone: Joi.string()
+            .pattern(new RegExp("[6-9]{1}[0-9]{9}"))
+            .min(10)
+            .max(10),
         privileges: Joi.number().default(0),
     });
 
