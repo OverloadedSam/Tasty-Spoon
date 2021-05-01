@@ -1,15 +1,17 @@
 const User = require("../models/user");
 const { userValidator } = require("../helpers/dataValidation");
 const { userDataUpdateValidator } = require("../helpers/updatedDataValidation");
+const ErrorResponse = require("../utils/errorResponse");
 
 // Get all users from the DB [READ].
-const getUsers = async (req, res) => {
+const getUsers = async (req, res, next) => {
     try {
         var response = await User.find(); // Read users asynchronously.
     } catch (error) {
         console.log("Some error ocurred");
         console.log(error);
-        return res.status(400).json({ error });
+        // return res.status(400).json({ error });
+        return next(error);
     }
 
     // Return the user list in response
@@ -21,13 +23,20 @@ const getUsers = async (req, res) => {
 };
 
 // Get single user from the DB by specifying "_id" [READ] .
-const getUserById = async (req, res) => {
+const getUserById = async (req, res, next) => {
     try {
         var response = await User.findById(req.params.id); // Read user asynchronously.
+        if (!response)
+            return next(
+                new ErrorResponse(
+                    `Id ${req.params.id} did not found! Please provide correct id.`,
+                    404
+                )
+            );
     } catch (error) {
         console.log("Some error ocurred");
         console.log(error);
-        return res.status(400).json({ error });
+        return next(error);
     }
 
     const {
@@ -58,15 +67,17 @@ const getUserById = async (req, res) => {
 };
 
 // Post user to the DB [CREATE].
-const postUser = async (req, res) => {
+const postUser = async (req, res, next) => {
     const { value, error } = userValidator(req.body); // Validate the user data.
 
     // If data is invalid then return ValidationError in response.
     if (error) {
-        return res.status(406).json({
-            message: "ValidationError",
-            error: error.details[0].message,
-        });
+        return next(
+            new ErrorResponse(
+                `Please provide correct information! ${error.details[0].message}`,
+                406
+            )
+        );
     }
 
     // Make an object to create an user in DB
@@ -85,11 +96,7 @@ const postUser = async (req, res) => {
     } catch (error) {
         console.log("Some error ocurred while saving the user to the db");
         console.log(error);
-        return res.status(400).json({
-            status: 400,
-            message: "Can not create user to the DB",
-            error,
-        });
+        return next(error);
     }
 
     const { firstName, lastName, email, phone } = response;
@@ -106,16 +113,18 @@ const postUser = async (req, res) => {
 };
 
 // Put/Update user in DB by specifying an id.
-const putUserById = async (req, res) => {
+const putUserById = async (req, res, next) => {
     let dataToBeUpdated = req.body;
 
     // Updated data validation for User, returns error if invalid.
-    const { error } = userDataUpdateValidator(req.body);
+    const { error } = userDataUpdateValidator(dataToBeUpdated);
     if (error) {
-        return res.status(400).json({
-            message: "Please provide correct details",
-            error,
-        });
+        return next(
+            new ErrorResponse(
+                `Please provide correct details ${error.details[0].message}`,
+                406
+            )
+        );
     }
 
     try {
@@ -125,14 +134,17 @@ const putUserById = async (req, res) => {
                 email: dataToBeUpdated.email,
             });
             if (emailFound && emailFound._id == req.params.id) {
-                return res.status(400).json({
-                    message: "Please provide new e-mail address",
-                });
+                return next(
+                    new ErrorResponse("Please provide new e-mail address", 406)
+                );
             }
             if (emailFound && emailFound._id != req.params.id) {
-                return res.status(400).json({
-                    message: `E-mail ${emailFound.email} has been already registered with other account`,
-                });
+                return next(
+                    new ErrorResponse(
+                        `E-mail ${emailFound.email} has been already registered with other account`,
+                        400
+                    )
+                );
             }
         }
         // Finds phone whether it exists in DB.
@@ -141,14 +153,17 @@ const putUserById = async (req, res) => {
                 phone: dataToBeUpdated.phone,
             });
             if (phoneFound && phoneFound._id == req.params.id) {
-                return res.status(400).json({
-                    message: "Please provide new phone number",
-                });
+                return next(
+                    new ErrorResponse("Please provide new phone number", 406)
+                );
             }
             if (phoneFound && phoneFound._id != req.params.id) {
-                return res.status(400).json({
-                    message: `Phone ${phoneFound.phone} has been already registered with other account`,
-                });
+                return next(
+                    new ErrorResponse(
+                        `Phone ${phoneFound.phone} has been already registered with other account`,
+                        400
+                    )
+                );
             }
         }
 
@@ -163,19 +178,22 @@ const putUserById = async (req, res) => {
         );
 
         // Send success in response.
-        if (isUpdate)
-            return res.status(200).json({
-                message: "Successfully updated the data",
-                updatedData: { ...dataToBeUpdated },
-            });
+        if (!isUpdate) {
+            return next(
+                new ErrorResponse(
+                    `Id ${req.params.id} did not found! Please provide correct id.`,
+                    400
+                )
+            );
+        }
+        return res.status(200).json({
+            message: "Successfully updated the data",
+            updatedData: { ...dataToBeUpdated },
+        });
     } catch (error) {
         console.log("Some error ocurred!");
         console.log(error);
-        return res.status(500).json({
-            message:
-                "Some error ocurred while processing your request please provide correct details",
-            error,
-        });
+        return next(error);
     }
 };
 module.exports = { getUsers, postUser, getUserById, putUserById };
