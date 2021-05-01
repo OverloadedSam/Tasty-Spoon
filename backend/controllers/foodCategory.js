@@ -1,19 +1,16 @@
-const mongoose = require("mongoose");
 const FoodCategory = require("../models/foodCategory"); // Model
 const { foodCategoryValidator } = require("../helpers/dataValidation");
 const { foodDataUpdateValidator } = require("../helpers/updatedDataValidation");
+const ErrorResponse = require("../utils/errorResponse");
 
 // Get food categories [READ]
-const getFoodCategory = async (req, res) => {
+const getFoodCategory = async (req, res, next) => {
     try {
         var response = await FoodCategory.find();
     } catch (error) {
         console.log("Some error  ocurred in promise");
         console.log(error);
-        return res.status(400).json({
-            status: 400,
-            message: "Bad request can not get food categories",
-        });
+        return next(error);
     }
     return res.status(200).json({
         success: true,
@@ -22,21 +19,19 @@ const getFoodCategory = async (req, res) => {
 };
 
 // Get food categories by specifying the category id [READ]
-const getFoodCategoryById = async (req, res) => {
+const getFoodCategoryById = async (req, res, next) => {
     try {
         var response = await FoodCategory.findById(req.params.id);
         if (!response) {
-            throw new Error(
-                `Can not get Food category check the id "${req.params.id}"`
+            return next(
+                new ErrorResponse(
+                    `Can not get Food Category for the id "${req.params.id}"`,
+                    404
+                )
             );
         }
     } catch (error) {
-        console.log("Some error ocurred in promise");
-        return res.status(400).json({
-            success: false,
-            status: 400,
-            message: error.message,
-        });
+        return next(error);
     }
 
     return res.status(200).json({
@@ -45,22 +40,21 @@ const getFoodCategoryById = async (req, res) => {
     });
 };
 
-// Get grocery categories by specifying the name of category [READ]
-const getFoodCategoryByName = async (req, res) => {
+// Get food categories by specifying the name of category [READ]
+const getFoodCategoryByName = async (req, res, next) => {
     try {
         var response = await FoodCategory.findOne({ name: req.query.name });
         if (response === null) {
-            throw new Error(
-                `There is no food category for name "${req.query.name}"`
+            return next(
+                new ErrorResponse(
+                    `There is no food category for the name "${req.query.name}"`,
+                    404
+                )
             );
         }
     } catch (error) {
         console.log("Some error ocurred");
-        return res.status(404).json({
-            success: false,
-            status: 404,
-            message: error.message,
-        });
+        return next(error);
     }
 
     return res.status(200).json({
@@ -70,16 +64,17 @@ const getFoodCategoryByName = async (req, res) => {
 };
 
 // Post the food category [CREATE]
-const postFoodCategory = async (req, res) => {
+const postFoodCategory = async (req, res, next) => {
     const { value, error } = foodCategoryValidator(req.body); // Validate input data.
 
     // If data is invalid then return ValidationError in response.
     if (error) {
-        return res.status(400).json({
-            status: 400,
-            error: "ValidationError",
-            message: error.details[0].message,
-        });
+        return next(
+            new ErrorResponse(
+                `Please provide correct data! error.details[0].message`,
+                406
+            )
+        );
     }
 
     // Make new object to save it in DB.
@@ -92,13 +87,7 @@ const postFoodCategory = async (req, res) => {
     try {
         var savedResponse = await foodCategory.save(); // Create in DB asynchronously.
     } catch (error) {
-        console.log("Error in posting food category");
-        console.log(error);
-        return res.status(500).json({
-            status: 500,
-            message: "id must be unique",
-            error,
-        });
+        return next(error);
     }
 
     // Return the response with created.
@@ -110,16 +99,17 @@ const postFoodCategory = async (req, res) => {
 };
 
 // Put/Update food category [UPDATE]
-const putFoodCategory = async (req, res) => {
+const putFoodCategory = async (req, res, next) => {
     const dataToBeUpdated = req.body;
     // Updated data validation for Food-Category, returns error if invalid.
     const { error } = foodDataUpdateValidator(dataToBeUpdated);
     if (error) {
-        return res.status(400).json({
-            success: false,
-            message: "Please provide correct data for food category",
-            error,
-        });
+        return next(
+            new ErrorResponse(
+                `Please provide correct data for food category. ${error.details[0].message}`,
+                406
+            )
+        );
     }
     try {
         // Updates Food-Category asynchronously.
@@ -131,10 +121,12 @@ const putFoodCategory = async (req, res) => {
 
         // Return false in success if id is not found.
         if (!updateCategory) {
-            return res.status(404).json({
-                success: false,
-                message: "Id not found please provide correct id",
-            });
+            return next(
+                new ErrorResponse(
+                    `Update request for id ${req.params.id} has been failed! Please provide correct id`,
+                    400
+                )
+            );
         }
 
         // Updates data in DB and Returns true in success if everything is ok.
@@ -146,12 +138,7 @@ const putFoodCategory = async (req, res) => {
     } catch (error) {
         console.log("Some error ocurred");
         console.log(error);
-        // Catches errors if mongoDB ObjectId is invalid or some other error raise.
-        return res.status(500).json({
-            success: false,
-            message: "Invalid id or id is incorrect. please provide correct id",
-            error,
-        });
+        return next(error);
     }
 };
 
