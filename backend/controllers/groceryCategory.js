@@ -1,21 +1,18 @@
-const mongoose = require("mongoose");
 const GroceryCategory = require("../models/groceryCategory"); // Model
 const { groceryCategoryValidator } = require("../helpers/dataValidation");
 const {
     groceryDataUpdateValidator,
 } = require("../helpers/updatedDataValidation");
+const ErrorResponse = require("../utils/errorResponse");
 
 // Get grocery categories [READ]
-const getGroceryCategory = async (req, res) => {
+const getGroceryCategory = async (req, res, next) => {
     try {
         var response = await GroceryCategory.find();
     } catch (error) {
         console.log("Some error ocurred in promise");
         console.log(error);
-        return res.status(400).json({
-            status: 400,
-            message: "Bad request can not get grocery categories",
-        });
+        return next(error);
     }
     return res.status(200).json({
         success: true,
@@ -24,21 +21,20 @@ const getGroceryCategory = async (req, res) => {
 };
 
 // Get grocery categories by specifying the id [READ]
-const getGroceryCategoryById = async (req, res) => {
+const getGroceryCategoryById = async (req, res, next) => {
     try {
         var response = await GroceryCategory.findById(req.params.id);
         if (!response) {
-            throw new Error(
-                `Can not get Grocery category check the id "${req.params.id}"`
+            return next(
+                new ErrorResponse(
+                    `Can not get Grocery Category for the id "${req.params.id}"`,
+                    404
+                )
             );
         }
     } catch (error) {
         console.log("Some error ocurred in promise");
-        return res.status(400).json({
-            success: false,
-            status: 400,
-            message: error.message,
-        });
+        return next(error);
     }
 
     return res.status(200).json({
@@ -48,22 +44,21 @@ const getGroceryCategoryById = async (req, res) => {
 };
 
 // Get grocery categories by specifying the name of category [READ]
-const getGroceryCategoryByName = async (req, res) => {
+const getGroceryCategoryByName = async (req, res, next) => {
     console.log("this by name is running!!!!!");
     try {
         var response = await GroceryCategory.findOne({ name: req.query.name });
         if (response === null) {
-            throw new Error(
-                `There is no grocery category for name "${req.query.name}"`
+            return next(
+                new ErrorResponse(
+                    `There is no grocery category for name "${req.query.name}"`,
+                    404
+                )
             );
         }
     } catch (error) {
         console.log("Some error ocurred");
-        return res.status(404).json({
-            success: false,
-            status: 404,
-            message: error.message,
-        });
+        return next(error);
     }
 
     return res.status(200).json({
@@ -73,16 +68,17 @@ const getGroceryCategoryByName = async (req, res) => {
 };
 
 // Post the grocery category [CREATE]
-const postGroceryCategory = async (req, res) => {
+const postGroceryCategory = async (req, res, next) => {
     const { value, error } = groceryCategoryValidator(req.body); // Validate input data.
 
     // If data is invalid then return ValidationError in response.
     if (error) {
-        return res.status(400).json({
-            status: 400,
-            error: "ValidationError",
-            message: error.details[0].message,
-        });
+        return next(
+            new ErrorResponse(
+                `Please provide correct data! ${error.details[0].message}`,
+                406
+            )
+        );
     }
 
     // Make new object to save it in DB.
@@ -98,11 +94,7 @@ const postGroceryCategory = async (req, res) => {
     } catch (error) {
         console.log("Error in posting grocery category");
         console.log(error);
-        return res.status(500).json({
-            status: 500,
-            message: "id must be unique",
-            error,
-        });
+        return next(error);
     }
 
     // Return the response with created.
@@ -114,16 +106,17 @@ const postGroceryCategory = async (req, res) => {
 };
 
 // Put/Update grocery category [UPDATE]
-const putGroceryCategory = async (req, res) => {
+const putGroceryCategory = async (req, res, next) => {
     const dataToBeUpdated = req.body;
     // Updated data validation for Grocery-Category, returns error if invalid.
     const { error } = groceryDataUpdateValidator(dataToBeUpdated);
     if (error) {
-        return res.status(400).json({
-            success: false,
-            message: "Please provide correct data for grocery category",
-            error,
-        });
+        return next(
+            new ErrorResponse(
+                `Please provide correct data for grocery category! ${error.details[0].message}`,
+                406
+            )
+        );
     }
     try {
         // Updates Grocery-Category asynchronously.
@@ -135,10 +128,12 @@ const putGroceryCategory = async (req, res) => {
 
         // Return false in success if id is not found.
         if (!updateCategory) {
-            return res.status(404).json({
-                success: false,
-                message: "Id not found please provide correct id",
-            });
+            return next(
+                new ErrorResponse(
+                    `Update request for id ${req.params.id} has been failed! Please provide correct id`,
+                    400
+                )
+            );
         }
 
         // Updates data in DB and Returns true in success if everything is ok.
@@ -151,11 +146,7 @@ const putGroceryCategory = async (req, res) => {
         console.log("Some error ocurred");
         console.log(error);
         // Catches errors if mongoDB ObjectId is invalid or some other error raise.
-        return res.status(500).json({
-            success: false,
-            message: "Invalid id or id is incorrect. please provide correct id",
-            error,
-        });
+        return next(error);
     }
 };
 
