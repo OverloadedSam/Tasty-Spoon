@@ -1,14 +1,12 @@
 const express = require("express");
 const server = express();
-const mongoose = require("mongoose");
-const jwtAuth = require("./helpers/authentication");
 const errorHandler = require("./helpers/errorHandler")
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require("dotenv/config");
 const nodemon = require("nodemon");
-const jwt = require("jsonwebtoken");
 const morgan = require("morgan");
+const connectDB = require("./config/db");
 
 // My Routers
 const productRoutes = require("./routes/products");
@@ -22,23 +20,9 @@ const usersRoutes = require("./routes/users");
 server.use(morgan("tiny"));
 server.use(bodyParser.json());
 server.use(cors());
-server.use(jwtAuth());
 
 // Database connection
-mongoose
-    .connect(`${process.env.DB_CONNECTION_STRING}`, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        dbName: "food-ordering-app",
-    })
-    .then(() => {
-        console.log("Connected to Database!");
-    })
-    .catch((error) => {
-        console.log("Failed to connect the Database!!");
-        console.log(error);
-    });
+connectDB();
 
 const api = process.env.API;
 
@@ -46,9 +30,9 @@ const api = process.env.API;
 server.use(api, productRoutes); // for all products.
 server.use(api, foodItemCategoryRoutes); // for food category
 server.use(api, groceryItemCategoryRoutes); // for grocery category
-server.use(api, signupRoutes);
-server.use(api, signInRoutes);
-server.use(api, usersRoutes);
+server.use(api, signupRoutes); // for signing/logging in of user
+server.use(api, signInRoutes); // for registration/signing up of user
+server.use(api, usersRoutes); // for user routes
 
 server.use(errorHandler); // Custom error handler middleware.
 
@@ -56,6 +40,6 @@ server.get(api, (req, res) => {
     res.send("You got the response");
 });
 
-server.listen(process.env.PORT, () => {
-    console.log(`[PORT: ${process.env.PORT}] The server is up and running...`);
+server.listen(process.env.PORT || 8080, () => {
+    console.log(`[PORT: ${process.env.PORT || 8080}] The server is up and running...`);
 });
