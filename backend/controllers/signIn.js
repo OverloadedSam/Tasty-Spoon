@@ -1,16 +1,14 @@
 const User = require("../models/user");
-const { generateToken } = require("../utils/generateToken");
+const ErrorResponse = require("../utils/errorResponse");
+const sendTokenToUser = require("../utils/sendTokenToUser");
 
 // For user login or sign-in
-const userSignIn = async (req, res) => {
+const userSignIn = async (req, res, next) => {
     const { email, password } = req.body;
 
     // Returns false in success if email or password is not int he request body.
     if (!email || !password) {
-        return res.status(400).json({
-            success: false,
-            message: "Please provide both email and password",
-        });
+        next(new ErrorResponse("Please provide both email and password", 400));
     }
 
     try {
@@ -18,44 +16,28 @@ const userSignIn = async (req, res) => {
 
         // Returns false if provided email is not found.
         if (!userFound) {
-            return res.status(404).json({
-                success: false,
-                message: "Email/Username does not exist",
-            });
+            return next(
+                new ErrorResponse("Email/Username does not exist", 404)
+            );
         }
 
         // Matches the provided password with the original password associated with email.
-        if (userFound && userFound.matchPassword(password)) {
-            const { _id, email, privileges } = userFound;
-            const token = generateToken(_id, email, privileges);
-
-            // Returns the token in response.
-            return res.status(200).header("auth-user", token).json({
-                success: true,
-                message: "Logged in successfully!",
-                userId: userFound._id,
-                userEmail: userFound.email,
-                userFirstName: userFound.firstName,
-                userLastName: userFound.lastName,
-                token,
-            });
+        if (await userFound.matchPassword(password)) {
+            sendTokenToUser(res, 200, userFound);
         } else {
             // Returns false if the password does not matches.
-            return res.status(400).json({
-                success: false,
-                message:
+            return next(
+                new ErrorResponse(
                     "Incorrect password! Please input the correct password",
-            });
+                    403
+                )
+            );
         }
     } catch (error) {
         // Catches errors in case something went wrong.
         console.log("Something went wrong while signing in!");
         console.log(error);
-        return res.status(500).json({
-            success: false,
-            message:
-                "Something went wrong while signing in. Please contact admin and report this issue.",
-        });
+        return next(error);
     }
 };
 
