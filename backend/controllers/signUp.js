@@ -1,18 +1,13 @@
 const User = require("../models/user");
 const { userValidator } = require("../helpers/dataValidation");
+const ErrorResponse = require("../utils/errorResponse");
 
 // Register the user [CREATE]
-const registerUser = async (req, res) => {
+const registerUser = async (req, res, next) => {
     const { value, error } = userValidator(req.body); // Validate the user data.
     // If invalid data then send error in response.
     if (error) {
-        return res.status(406).json({
-            error: {
-                type: "ValidationError",
-            },
-            message: error.details[0].message,
-            error: error.details[0].message,
-        });
+        return next(new ErrorResponse(error.details[0].message, 406));
     }
 
     try {
@@ -24,21 +19,17 @@ const registerUser = async (req, res) => {
             phone: req.body.phone,
         });
         if (emailFound || phoneFound) {
-            return res.status(406).json({
-                status: 406,
-                error: {
-                    type: "ValidationError",
-                },
-                message: `${emailFound ? "E-mail" : "Phone"} ${
-                    emailFound ? emailFound.email : phoneFound.phone
-                } has been already registered with another account`,
-            });
+            return next(
+                new ErrorResponse(
+                    `${emailFound ? "E-mail" : "Phone"} ${
+                        emailFound ? emailFound.email : phoneFound.phone
+                    } has been already registered with another account`,
+                    406
+                )
+            );
         }
     } catch (error) {
-        return res.status(400).json({
-            message: `Can not register you due to some technical issues`,
-            error,
-        });
+        return next(error);
     }
 
     // Make an object to create an user in DB
@@ -57,12 +48,7 @@ const registerUser = async (req, res) => {
     } catch (error) {
         console.log("Some error ocurred while saving the user to the db");
         console.log(error);
-        return res.status(500).json({
-            success: false,
-            status: 500,
-            message: "Can not create user to the DB",
-            error,
-        });
+        return next(error);
     }
 
     const { firstName, lastName, email, phone } = response; // send only general data don't send passwords.
