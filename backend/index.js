@@ -15,6 +15,7 @@ const groceryItemCategoryRoutes = require("./routes/groceryCategory");
 const signupRoutes = require("./routes/signUp");
 const signInRoutes = require("./routes/signIn");
 const usersRoutes = require("./routes/users");
+const orderRoutes = require("./routes/orders");
 
 //Middle wares
 server.use(morgan("tiny"));
@@ -33,6 +34,7 @@ server.use(api, groceryItemCategoryRoutes); // for grocery category
 server.use(api, signupRoutes); // for signing/logging in of user
 server.use(api, signInRoutes); // for registration/signing up of user
 server.use(api, usersRoutes); // for user routes
+server.use(api, orderRoutes);
 
 server.use(errorHandler); // Custom error handler middleware.
 
