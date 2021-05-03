@@ -13,16 +13,19 @@ const TopRatedFoods = () => {
                     imgUrl="./assets/images/food/feature-1.jpg"
                     imgOrder="2"
                     contentOrder="1"
-                />
+                    prodName="Bread Omelette Salsa"
+                    />
                 <Featurette
                     imgUrl="./assets/images/food/feature-2.jpg"
                     imgOrder="1"
                     contentOrder="2"
-                />
+                    prodName="Creamy pudding"
+                    />
                 <Featurette
                     imgUrl="./assets/images/food/feature-3.jpg"
                     imgOrder="2"
                     contentOrder="1"
+                    prodName="Chicken Tikka Burgers"
                 />
             </Container>
         </>
