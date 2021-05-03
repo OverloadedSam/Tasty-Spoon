@@ -6,21 +6,35 @@ import { listProducts } from "../redux/actions/productActions";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 
-const Meals = () => {
+const Products = ({ location }) => {
     const dispatch = useDispatch();
     const productList = useSelector((state) => state.productList);
     const { loading, error, products } = productList;
 
+    const type = location.pathname;
     useEffect(() => {
-        dispatch(listProducts());
-    }, [dispatch]);
+        if (type === "/meal") {
+            dispatch(listProducts("meals"));
+        }
+
+        if (type === "/grocery") {
+            dispatch(listProducts("groceries"));
+        }
+    }, [type, dispatch]);
 
     return (
         <>
             <Container>
-                <h1 className="d-inline-block home-main-heading py-2 my-5">
-                    Tasty meals to <span>order.</span>
-                </h1>
+                {type === "/meal" && (
+                    <h1 className="d-inline-block home-main-heading py-2 my-5">
+                        Tasty meals to <span>order.</span>
+                    </h1>
+                )}
+                {type === "/grocery" && (
+                    <h1 className="d-inline-block home-main-heading py-2 my-5">
+                        Fresh groceries to <span>order.</span>
+                    </h1>
+                )}
             </Container>
             <Container>
                 {loading ? (
@@ -44,4 +58,4 @@ const Meals = () => {
     );
 };
 
-export default Meals;
+export default Products;
