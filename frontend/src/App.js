@@ -9,6 +9,7 @@ import Products from "./components/Products";
 import ProductDetailsScreen from "./screens/ProductDetailsScreen";
 import CartScreen from "./screens/CartScreen";
 import Category from './components/Category';
+import SignInScreen from "./screens/SignInScreen";
 
 function App() {
     return (
@@ -24,6 +25,7 @@ function App() {
                             <Route exact path="/category/:producttype" component={Category} />
                             <Route path="/productdetails/:id" component={ProductDetailsScreen} />
                             <Route path="/cart/:id?" component={CartScreen} />
+                            <Route path="/signin" component={SignInScreen} />
                         </Switch>
                     </main>
                     <Footer />
