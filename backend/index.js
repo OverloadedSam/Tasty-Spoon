@@ -16,6 +16,7 @@ const signupRoutes = require("./routes/signUp");
 const signInRoutes = require("./routes/signIn");
 const usersRoutes = require("./routes/users");
 const orderRoutes = require("./routes/orders");
+const favouriteRouters = require("./routes/favourite");
 
 //Middle wares
 server.use(morgan("tiny"));
@@ -35,6 +36,7 @@ server.use(api, signupRoutes); // for signing/logging in of user
 server.use(api, signInRoutes); // for registration/signing up of user
 server.use(api, usersRoutes); // for user routes
 server.use(api, orderRoutes);
+server.use(api, favouriteRouters);
 
 server.use(errorHandler); // Custom error handler middleware.
 
