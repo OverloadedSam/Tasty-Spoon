@@ -19,6 +19,7 @@ const CartScreen = ({ match, history, location }) => {
         ? Number(location.search.split("=")[1])
         : 1;
 
+    const userSignIn = useSelector((state) => state.userSignIn);
     const cart = useSelector((state) => state.cart);
     let { cartItems } = cart;
 
@@ -28,6 +29,15 @@ const CartScreen = ({ match, history, location }) => {
             dispatch(addToCart(match.params.id, quantity));
         }
     }, [dispatch, match.params.id, quantity]);
+
+    const checkoutHandler = () => {
+        if (!userSignIn.isSignedIn) {
+            history.push("/signin");
+            return;
+        }
+
+        history.push("/transaction");
+    };
 
     // Delete items from cart screen
     const itemDeleteHandler = (id) => {
@@ -57,7 +67,7 @@ const CartScreen = ({ match, history, location }) => {
         );
         gst = Number((subTotalAmount * 0.18).toFixed(2));
         deliveryCharges = subTotalAmount >= 500 ? 0 : 80;
-        grandTotal = subTotalAmount + gst + deliveryCharges;
+        grandTotal = (subTotalAmount + gst + deliveryCharges).toFixed(2);
     }
 
     return (
@@ -78,11 +88,11 @@ const CartScreen = ({ match, history, location }) => {
                                         <Row className="d-inline-flex align-items-center no-wrap">
                                             <Col md={2}>
                                                 <Image
-                                                    src={`/assets/images/products/food-items/${item.prodImage}`}
+                                                    src={`/assets/images/products/${item.prodImage}`}
                                                     className="cart-image"
                                                     alt={item.prodName}
                                                     fluid
-                                                    roundedCircle
+                                                    rounded
                                                 />
                                             </Col>
                                             <Col
@@ -227,6 +237,7 @@ const CartScreen = ({ match, history, location }) => {
                                         variant="info"
                                         size="lg"
                                         block
+                                        onClick={checkoutHandler}
                                         disabled={cartItems.length === 0}
                                     >
                                         Proceed To Checkout
