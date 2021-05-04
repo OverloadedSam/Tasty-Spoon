@@ -6,10 +6,12 @@ import {
     removeFromCartSuccess,
     removeFromCartFail,
 } from "../action-creators/cartActionCreator";
+import { REMOVED_ALL_FROM_CART } from "../action-types/cartActionTypes";
+
 
 export const addToCart = (id, qty) => async (dispatch, getState) => {
     try {
-        dispatch(addToCartReq);
+        dispatch(addToCartReq());
 
         const { data } = await axios.get(
             `${process.env.REACT_APP_API_URL}/product/${id}`
@@ -51,3 +53,14 @@ export const removeFromCart = (id) => async (dispatch, getState) => {
         dispatch(removeFromCartFail(error));
     }
 };
+
+export const removeAllFromCart = () => async (dispatch, getState) => {
+
+    try {
+        dispatch({ type: REMOVED_ALL_FROM_CART });
+        localStorage.removeItem("cartItems");
+    } catch (error) {
+        dispatch(removeFromCartFail(error));
+    }
+
+}

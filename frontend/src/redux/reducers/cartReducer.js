@@ -38,6 +38,10 @@ export const cartReducer = (state = cartInitState, action) => {
             return { loading: false, cartItems: [...action.payload.data] };
         }
 
+        case actions.REMOVED_ALL_FROM_CART: {
+            return { loading: false, cartItems: [] };
+        }
+
         default:
             return state;
     }
