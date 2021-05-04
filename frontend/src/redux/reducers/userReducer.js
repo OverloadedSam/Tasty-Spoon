@@ -34,3 +34,40 @@ export const userSignInReducer = (state = userSignInInitState, action) => {
             return state;
     }
 };
+
+const userSignUpInitState = {
+    loading: false,
+    error: false,
+    isSignedUpFailed: false,
+    isSignedUpSuccess: false,
+};
+export const userSignUpReducer = (state = userSignUpInitState, action) => {
+    switch (action.type) {
+        case actions.USER_SIGN_UP_REQUESTED:
+            return {
+                ...state,
+                loading: true,
+                error: false,
+                isSignedUpFailed: false,
+                isSignedUpSuccess: false,
+            };
+
+        case actions.USER_SIGN_UP_SUCCEEDED:
+            return {
+                ...state,
+                loading: false,
+                isSignedUpSuccess: true,
+            };
+
+        case actions.USER_SIGN_UP_FAILED:
+            return {
+                ...state,
+                loading: false,
+                isSignedUpFailed: true,
+                error: action.payload.errorMsg,
+            };
+
+        default:
+            return state;
+    }
+};

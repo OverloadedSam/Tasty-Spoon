@@ -27,3 +27,28 @@ export const userSignInFail = (data, userPayload) => {
 export const userSignOutSuccess = () => {
     return { type: actions.USER_SIGN_OUT_SUCCEEDED };
 };
+
+export const userSignUpReq = () => {
+    return { type: actions.USER_SIGN_UP_REQUESTED };
+};
+
+export const userSignUpSuccess = (data) => {
+    return {
+        type: actions.USER_SIGN_UP_SUCCEEDED,
+        payload: {
+            userData: data,
+        },
+    };
+};
+
+export const userSignUpFail = (error) => {
+    return {
+        type: actions.USER_SIGN_UP_FAILED,
+        payload: {
+            errorMsg:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        },
+    };
+};
