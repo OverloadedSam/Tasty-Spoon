@@ -3,7 +3,6 @@ import "../css/navMenuStyle.css";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import SignInModal from './SignInModal';
 import Badge from "react-bootstrap/Badge";
 import {Link} from 'react-router-dom'
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -24,11 +23,11 @@ const NavMenu = () => {
     const signOutHandler = () => {
         dispatch(signOut());
     }
-    const [showSignInModal, setShowSignInModal] = React.useState(false);
+
     return (
         <>
             <Navbar expand="lg">
-                <Navbar.Brand href="#home">Food Ordering App</Navbar.Brand>
+                <Navbar.Brand as={Link} to="/">Tasty Spoon</Navbar.Brand>
                 <Navbar.Toggle aria-controls="application-navbar" />
                 <Navbar.Collapse
                     className="justify-content-between"
@@ -42,10 +41,10 @@ const NavMenu = () => {
                             Grocery <Badge variant="danger">New</Badge>
                         </Nav.Link>
                         <NavDropdown className="mx-auto px-3 navbar-item" title="Categories" id="basic-nav-dropdown">
-                            <NavDropdown.Item className="navbar-item" as={ Link } to="/foodcategories">
+                            <NavDropdown.Item className="navbar-item" as={ Link } to="/category/food">
                                 <i className="fa fa-cutlery"> Food Categories</i>
                             </NavDropdown.Item>
-                            <NavDropdown.Item className="navbar-item" as={ Link } to="/grocerycategories">
+                            <NavDropdown.Item className="navbar-item" as={ Link } to="/category/grocery">
                                 <i className="fa fa-lemon-o"> Grocery Categories</i>
                             </NavDropdown.Item>
                         </NavDropdown>
@@ -60,7 +59,6 @@ const NavMenu = () => {
                             <i className="fa fa-shopping-cart"><span className="navbar-item"> Cart</span></i>
                         </Nav.Link>
 
-                        <SignInModal show={showSignInModal} onHide={() => setShowSignInModal(false)}/>
 
                         {
                             userData ?
@@ -73,14 +71,16 @@ const NavMenu = () => {
                                 variant="info"
                                 >
                                     <Dropdown.Header className="text-capitalize"><i className="fa fa-user-circle-o"></i>{" "}{userFirstName}</Dropdown.Header>
-                                    <Dropdown.Item as={Link} to="/" ><i className="fa fa-gear"></i>{" "}Profile</Dropdown.Item>
+                                    <Dropdown.Item as={Link} to="/" ><i className="fa fa-gear text-primary"></i>{" "}Profile</Dropdown.Item>
+                                    <Dropdown.Item as={Link} to="/ordereditems" ><i className="fa fa-truck text-success"></i>{" "}My Orders</Dropdown.Item>
+                                    <Dropdown.Item as={Link} to="/favourites" ><i className="fa fa-heart text-danger"></i>{" "}Favourites</Dropdown.Item>
                                     <Dropdown.Divider />
                                 <Dropdown.Item as={Link} to="/" onClick={signOutHandler}><i className="fa fa-sign-out"></i>{" "}Sign out</Dropdown.Item>
                             </DropdownButton>)
                         :
                         (
                             <Nav.Item className="mx-auto p-1">
-                                <Button variant="info" size="sm" className="mx-2" onClick={() => setShowSignInModal(true)}>Sign in</Button>
+                                <Button variant="info" size="sm" className="mx-2" as={Link} to="/signin">Sign in</Button>
                             </Nav.Item>
                         )
 

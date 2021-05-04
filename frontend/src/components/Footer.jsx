@@ -1,10 +1,14 @@
 import React from "react";
 import "../App.css";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
+
 const Footer = () => {
+    const userSignedIn = useSelector((state) => state.userSignIn);
     return (
         <>
             <footer className="bg-dark mt-4">
@@ -58,7 +62,7 @@ const Footer = () => {
                     <Row className="mt-3">
                         <Col md={3} className="mx-auto mb-4">
                             <h5 className="text-uppercase font-weight-bold">
-                                Food ordering App!
+                                Tasty Spoon !
                             </h5>
                             <hr
                                 className="mb-4 mt-0 d-inline-block mx-auto text-info"
@@ -123,22 +127,30 @@ const Footer = () => {
                             <p>
                                 <a href="#!">FAQ</a>
                             </p>
-                            <p>
-                                <Button
-                                    variant="info"
-                                    className="rounded-pill text-light btn-sm"
-                                >
-                                    Sign in
-                                </Button>
-                            </p>
-                            <p>
-                                <Button
-                                    variant="outline-info"
-                                    className="rounded-pill btn-sm"
-                                >
-                                    Sign Up
-                                </Button>
-                            </p>
+                            {!userSignedIn.isSignedIn && (
+                                <>
+                                    <p>
+                                        <Button
+                                            variant="info"
+                                            className="rounded-pill text-light btn-sm"
+                                            as={Link}
+                                            to="/signin"
+                                        >
+                                            Sign in
+                                        </Button>
+                                    </p>
+                                    <p>
+                                        <Button
+                                            as={Link}
+                                            to="/signup"
+                                            variant="outline-info"
+                                            className="rounded-pill btn-sm text-light"
+                                        >
+                                            Sign Up
+                                        </Button>
+                                    </p>
+                                </>
+                            )}
                         </Col>
 
                         <Col
@@ -163,7 +175,7 @@ const Footer = () => {
                             </p>
                             <p>
                                 <i className="fa fa-envelope mr-3"></i>
-                                FoodOrder@email.com
+                                Tastyspoon@email.com
                             </p>
                             <p>
                                 <i className="fa fa-phone mr-3"></i>+ 01 234 567
@@ -178,7 +190,7 @@ const Footer = () => {
                 </Container>
                 <div className="text-center py-3 text-light">
                     © 2021 Copyright:
-                    <a href="https://mdbootstrap.com/"> FoodOrderingApp.com</a>
+                    <a href="https://mdbootstrap.com/"> Tastyspoon.com</a>
                 </div>
             </footer>
         </>
