@@ -1,11 +1,13 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import { getOrderDetails } from "../redux/actions/orderActions";
 import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import Spinner from "react-bootstrap/Spinner";
+import Button from "react-bootstrap/Button";
 
-const OrderedProductsScreen = () => {
+const OrderedProductsScreen = ({ history }) => {
     const dispatch = useDispatch();
     const orderDetails = useSelector((state) => state.orderDetails);
     const { loading, error, orders } = orderDetails;
@@ -14,7 +16,7 @@ const OrderedProductsScreen = () => {
     React.useEffect(() => {
         if (userSignIn.isSignedIn) {
             dispatch(getOrderDetails());
-        }
+        } else history.push("/signin");
     }, [dispatch, userSignIn.isSignedIn]);
 
     return (
@@ -32,75 +34,73 @@ const OrderedProductsScreen = () => {
                     <h6>{error}</h6>
                 ) : orders.length !== 0 ? (
                     <>
-                        {orders.map((order, index) => {
-                            return (
-                                <>
-                                    <h4>Order {index + 1}</h4>
-                                    <Table
-                                        striped
-                                        bordered
-                                        hover
-                                        key={index}
-                                        className="mb-5"
-                                    >
-                                        <tbody>
-                                            <tr key="first">
-                                                <th>Product Name</th>
-                                                <th>Price (single)</th>
-                                                <th>Quantity</th>
-                                                <th>Subtotal Amount</th>
-                                            </tr>
-
-                                            {order.orderedItems.map(
-                                                (item, index) => {
-                                                    return (
-                                                        <tr key={item.prodId}>
-                                                            <td className="text-capitalize">
-                                                                {item.prodName}
-                                                            </td>
-                                                            <td>
-                                                                {" "}
-                                                                <i className="fa fa-inr"></i>{" "}
-                                                                {item.prodPrice}{" "}
-                                                                /-
-                                                            </td>
-                                                            <td>
-                                                                x {item.qty}
-                                                            </td>
-                                                            <td>
-                                                                <i className="fa fa-inr"></i>{" "}
-                                                                {item.prodPrice *
-                                                                    item.qty}{" "}
-                                                                /-
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                }
+                        <Table
+                            striped
+                            bordered
+                            hover
+                            responsive
+                            className="table-sm"
+                        >
+                            <thead>
+                                <tr>
+                                    <th className="text-center">ORDER ID</th>
+                                    <th className="text-center">DATE</th>
+                                    <th className="text-center">
+                                        TOTAL AMOUNT
+                                    </th>
+                                    <th className="text-center">PAID AT</th>
+                                    <th className="text-center">
+                                        DELIVERED AT
+                                    </th>
+                                    <th className="text-center"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {orders.map((order) => (
+                                    <tr key={order._id}>
+                                        <td className="text-center">
+                                            {order._id}
+                                        </td>
+                                        <td className="text-center">
+                                            {order.createdAt.substring(0, 10)}
+                                        </td>
+                                        <td className="text-center">
+                                            <i className="fa fa-inr"></i>{" "}
+                                            {order.totalPayableAmount.toFixed(
+                                                2
                                             )}
-                                            <tr key="secondlast">
-                                                <td colSpan="2">
-                                                    Date Ordered
-                                                </td>
-                                                <td colSpan="2">
-                                                    {order.dateOrdered}
-                                                </td>
-                                            </tr>
-                                            <tr key="last">
-                                                <th colSpan="2">
-                                                    Total payable amount for
-                                                    this order (Taxes included){" "}
-                                                </th>
-                                                <th colSpan="2">
-                                                    <i className="fa fa-inr"></i>{" "}
-                                                    {order.totalPayableAmount}{" "}
-                                                    /-
-                                                </th>
-                                            </tr>
-                                        </tbody>
-                                    </Table>
-                                </>
-                            );
-                        })}
+                                        </td>
+                                        <td className="text-center text-success">
+                                            {order.isPaid ? (
+                                                order.paidAt.substring(0, 16)
+                                            ) : (
+                                                <i className="fa fa-times text-danger"></i>
+                                            )}
+                                        </td>
+                                        <td className="text-center">
+                                            {order.isDelivered ? (
+                                                order.deliveredAt.substring(
+                                                    0,
+                                                    16
+                                                )
+                                            ) : (
+                                                <i className="fa fa-times text-danger"></i>
+                                            )}
+                                        </td>
+                                        <td className="text-center">
+                                            <Link to={`/order/${order._id}`}>
+                                                <Button
+                                                    className="btn-sm"
+                                                    variant="info"
+                                                >
+                                                    <i className="fa fa-info-circle"></i>
+                                                </Button>
+                                            </Link>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
                     </>
                 ) : (
                     ""
