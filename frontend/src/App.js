@@ -13,6 +13,7 @@ import SignInScreen from "./screens/SignInScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import OrderedProductsScreen from "./screens/OrderedProductsScreen";
 import TransactionScreen from "./screens/TransactionScreen";
+import FavouritesScreen from "./screens/FavouritesScreen";
 
 function App() {
     return (
@@ -31,6 +32,7 @@ function App() {
                             <Route path="/signin" component={SignInScreen} />
                             <Route path="/signup" component={SignUpScreen} />
                             <Route path="/ordereditems" component={OrderedProductsScreen} />
+                            <Route path="/favourites/:productid?" component={FavouritesScreen} />
                             <Route path="/transaction" component={TransactionScreen} />
                         </Switch>
                     </main>
