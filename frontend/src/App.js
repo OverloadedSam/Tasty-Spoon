@@ -23,17 +23,17 @@ function App() {
                     <NavMenu />
                     <main>
                         <Switch>
-                            <Route exact path="/" component={HomeScreen} />
-                            <Route exact path="/meal" component={Products} />
-                            <Route exact path="/grocery" component={Products} />
                             <Route exact path="/category/:producttype" component={Category} />
                             <Route path="/productdetails/:id" component={ProductDetailsScreen} />
                             <Route path="/cart/:id?" component={CartScreen} />
+                            <Route path="/favourites" component={FavouritesScreen} />
+                            <Route path="/ordereditems" component={OrderedProductsScreen} />
+                            <Route path="/transaction" component={TransactionScreen} />
                             <Route path="/signin" component={SignInScreen} />
                             <Route path="/signup" component={SignUpScreen} />
-                            <Route path="/ordereditems" component={OrderedProductsScreen} />
-                            <Route path="/favourites/:productid?" component={FavouritesScreen} />
-                            <Route path="/transaction" component={TransactionScreen} />
+                            <Route path="/grocery" component={Products} />
+                            <Route path="/meal" component={Products} />
+                            <Route exact path="/" component={HomeScreen} />
                         </Switch>
                     </main>
                     <Footer />
