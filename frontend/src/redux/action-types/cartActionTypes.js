@@ -4,3 +4,6 @@ export const ADDED_TO_CART_FAILED = "addedToCartFailed";
 export const REMOVED_FROM_CART = "removedFromCart";
 
 export const REMOVED_ALL_FROM_CART = "removedAllFromCart";
+
+export const SAVE_SHIPPING_ADDRESS = "saveShippingAddress";
+export const SAVE_PAYMENT_METHOD = "savePaymentMethod";

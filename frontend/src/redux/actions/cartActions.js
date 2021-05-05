@@ -5,9 +5,10 @@ import {
     addToCartFail,
     removeFromCartSuccess,
     removeFromCartFail,
+    saveShippingAddress,
+    savePaymentMethod,
 } from "../action-creators/cartActionCreator";
 import { REMOVED_ALL_FROM_CART } from "../action-types/cartActionTypes";
-
 
 export const addToCart = (id, qty) => async (dispatch, getState) => {
     try {
@@ -54,13 +55,31 @@ export const removeFromCart = (id) => async (dispatch, getState) => {
     }
 };
 
-export const removeAllFromCart = () => async (dispatch, getState) => {
-
+export const removeAllFromCart = () => async (dispatch) => {
     try {
         dispatch({ type: REMOVED_ALL_FROM_CART });
         localStorage.removeItem("cartItems");
     } catch (error) {
         dispatch(removeFromCartFail(error));
     }
+};
 
-}
+export const saveAddressToCart = (address) => async (dispatch) => {
+    try {
+        dispatch(saveShippingAddress(address));
+
+        localStorage.setItem("shippingAddress", JSON.stringify(address));
+    } catch (e) {
+        console.log("Error ocurred while saving shipping address", e);
+    }
+};
+
+export const savePaymentMethodToCart = (paymentMethod) => async (dispatch) => {
+    try {
+        dispatch(savePaymentMethod(paymentMethod));
+
+        localStorage.setItem("paymentMethod", JSON.stringify(paymentMethod));
+    } catch (e) {
+        console.log("Error ocurred while saving payment method", e);
+    }
+};
