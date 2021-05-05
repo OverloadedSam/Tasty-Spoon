@@ -11,12 +11,19 @@ import axios from "axios";
 const apiUrl = process.env.REACT_APP_API_URL;
 
 // Listing of all the products
-export const listProducts = () => async (dispatch) => {
+export const listProducts = (type) => async (dispatch) => {
     try {
         dispatch(prodListReq());
+        let data;
 
-        let { data } = await axios.get(`${apiUrl}/products/`);
-        data = data.data;
+        if (type === "meals") {
+            const response = await axios.get(`${apiUrl}/products/meals`);
+            data = response.data.data;
+        }
+        if (type === "groceries") {
+            const response = await axios.get(`${apiUrl}/products/groceries`);
+            data = response.data.data;
+        }
 
         dispatch(prodListSuccess(data));
     } catch (error) {

@@ -11,6 +11,7 @@ import CartScreen from "./screens/CartScreen";
 import Category from './components/Category';
 import SignInScreen from "./screens/SignInScreen";
 import SignUpScreen from "./screens/SignUpScreen";
+import OrderedProductsScreen from "./screens/OrderedProductsScreen";
 import TransactionScreen from "./screens/TransactionScreen";
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
                             <Route path="/cart/:id?" component={CartScreen} />
                             <Route path="/signin" component={SignInScreen} />
                             <Route path="/signup" component={SignUpScreen} />
+                            <Route path="/ordereditems" component={OrderedProductsScreen} />
                             <Route path="/transaction" component={TransactionScreen} />
                         </Switch>
                     </main>
