@@ -1,13 +1,20 @@
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Image from "react-bootstrap/Image";
 import Badge from "react-bootstrap/Badge";
+import { addItemToFavourites } from "../redux/actions/favouriteActions";
+import SnackBar from "./SnackBar";
 
 const ProductCard = ({ product }) => {
-    product.rating = (product.rating + 0.0).toFixed(1);
+    const dispatch = useDispatch();
+    const favourites = useSelector((state) => state.favourites);
+    const { loading, error, isAdded } = favourites;
+
+    product.rating = Number(product.rating + 0.0).toFixed(1);
     const badgeColor =
         product.rating <= 2
             ? "danger"
@@ -20,6 +27,10 @@ const ProductCard = ({ product }) => {
         history.push(`/cart/${product._id}`);
     };
 
+    const addToFavHandler = () => {
+        dispatch(addItemToFavourites(product._id));
+    };
+
     return (
         <>
             <Col lg={3} md={4} className="mb-3">
@@ -28,7 +39,7 @@ const ProductCard = ({ product }) => {
                         <Link to={`/productdetails/${product._id}`}>
                             <Card.Img
                                 variant="top"
-                                src={`/assets/images/products/food-items/${product.image}`}
+                                src={`/assets/images/products/${product.image}`}
                                 className="prod-img"
                             />
                         </Link>
@@ -75,14 +86,6 @@ const ProductCard = ({ product }) => {
                         <div>
                             <Button
                                 disabled={product.stockCount === 0}
-                                size="sm"
-                                variant="success"
-                                className="mt-1"
-                            >
-                                Order
-                            </Button>
-                            <Button
-                                disabled={product.stockCount === 0}
                                 onClick={addToCartHandler}
                                 size="sm"
                                 variant="info"
@@ -91,6 +94,7 @@ const ProductCard = ({ product }) => {
                                 <i className="fa fa-shopping-cart"></i>
                             </Button>
                             <Button
+                                onClick={addToFavHandler}
                                 size="sm"
                                 variant="outline-danger"
                                 className="mt-1"
@@ -101,6 +105,12 @@ const ProductCard = ({ product }) => {
                     </Card.Body>
                 </Card>
             </Col>
+            <SnackBar
+                loading={loading}
+                errorMessage={error}
+                success={isAdded}
+                successMessage="Successfully added to favourites 💝!"
+            />
         </>
     );
 };

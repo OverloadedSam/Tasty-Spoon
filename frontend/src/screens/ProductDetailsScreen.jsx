@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Rating from "../components/Rating";
+import { addItemToFavourites } from "../redux/actions/favouriteActions";
 import { useDispatch, useSelector } from "react-redux";
 import { listProductDetails } from "../redux/actions/productActions";
 import Container from "react-bootstrap/Container";
@@ -9,16 +10,30 @@ import ListGroup from "react-bootstrap/ListGroup";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Image from "react-bootstrap/Image";
+import SnackBar from "../components/SnackBar";
 
 const ProductDetails = ({ history, match }) => {
     const [qty, setQty] = useState(1);
     const dispatch = useDispatch();
 
     const productDetails = useSelector((state) => state.productDetails);
+    const user = useSelector((state) => state.userSignIn);
     const { loading, error, product } = productDetails;
+
+    const favourites = useSelector((state) => state.favourites);
+    const { loading: favLoading, error: favError, isAdded } = favourites;
 
     const addToCartHandler = () => {
         history.push(`/cart/${product._id}?qty=${qty}`);
+    };
+
+    const addToFavHandler = () => {
+        if (!user.isSignedIn) {
+            history.push("/signin");
+            return;
+        }
+
+        dispatch(addItemToFavourites(product._id));
     };
 
     useEffect(() => {
@@ -43,7 +58,7 @@ const ProductDetails = ({ history, match }) => {
                             <div className="d-flex justify-content-center align-items-center">
                                 <Image
                                     className="h-75 w-75"
-                                    src={`/assets/images/products/food-items/${product.image}`}
+                                    src={`/assets/images/products/${product.image}`}
                                     fluid
                                     thumbnail
                                 />
@@ -158,15 +173,6 @@ const ProductDetails = ({ history, match }) => {
                                     <Row>
                                         <Col>
                                             <Button
-                                                disabled={
-                                                    product.stockCount === 0
-                                                }
-                                                variant="success"
-                                                className="mt-1 ml-2"
-                                            >
-                                                Order
-                                            </Button>
-                                            <Button
                                                 onClick={addToCartHandler}
                                                 disabled={
                                                     product.stockCount === 0
@@ -180,6 +186,7 @@ const ProductDetails = ({ history, match }) => {
                                             <Button
                                                 variant="outline-danger"
                                                 className="mt-1 ml-2"
+                                                onClick={addToFavHandler}
                                             >
                                                 <i className="fa fa-heart"></i>
                                             </Button>
@@ -233,6 +240,13 @@ const ProductDetails = ({ history, match }) => {
                 ) : (
                     ""
                 )}
+
+                <SnackBar
+                    loading={favLoading}
+                    errorMessage={favError}
+                    success={isAdded}
+                    successMessage="Successfully added to favourites 💝!"
+                />
             </Container>
         </>
     );
