@@ -9,6 +9,7 @@ import { cartReducer } from "./reducers/cartReducer";
 import { userSignInReducer, userSignUpReducer } from "./reducers/userReducer";
 import { orderReducer, orderDetailsReducer} from './reducers/orderReducer';
 import { categoryReducer } from "./reducers/categoryReducer";
+import { favouriteReducer } from "./reducers/favouriteReducer";
 
 const rootReducer = combineReducers({
     productList: productListReducer,
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
     order: orderReducer,
     orderDetails: orderDetailsReducer,
     category: categoryReducer,
+    favourites: favouriteReducer
 });
 
 const middleware = [thunk];
