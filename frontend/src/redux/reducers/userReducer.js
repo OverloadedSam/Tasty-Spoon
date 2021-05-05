@@ -71,3 +71,57 @@ export const userSignUpReducer = (state = userSignUpInitState, action) => {
             return state;
     }
 };
+
+const userDetailsInitState = {
+    loading: false,
+    error: false,
+    userData: null,
+};
+export const userDetailsReducer = (state = userDetailsInitState, action) => {
+    switch (action.type) {
+        case actions.USER_DETAILS_REQUESTED:
+            return { loading: true, error: false, userData: null };
+
+        case actions.USER_DETAILS_SUCCEEDED:
+            return {
+                loading: false,
+                error: false,
+                userData: action.payload.data,
+            };
+
+        case actions.USER_DETAILS_FAILED:
+            return { loading: false, error: action.payload.errorMsg };
+
+        default:
+            return state;
+    }
+};
+
+const userProfileUpdateInitState = {
+    loading: false,
+    error: false,
+    isUpdated: false,
+};
+export const userProfileUpdateReducer = (
+    state = userProfileUpdateInitState,
+    action
+) => {
+    switch (action.type) {
+        case actions.USER_PROFILE_UPDATE_REQUESTED:
+            return { loading: true, error: false, isUpdated: false };
+
+        case actions.USER_PROFILE_UPDATE_SUCCEEDED:
+            return {
+                loading: false,
+                error: false,
+                isUpdated: true,
+                data: action.payload.data,
+            };
+
+        case actions.USER_PROFILE_UPDATE_FAILED:
+            return { loading: false, error: action.payload.errorMsg };
+
+        default:
+            return state;
+    }
+};

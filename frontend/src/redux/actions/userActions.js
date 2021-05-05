@@ -8,6 +8,12 @@ import {
     userSignUpReq,
     userSignUpSuccess,
     userSignUpFail,
+    userDetailsReq,
+    userDetailsSuccess,
+    userDetailsFail,
+    userProfileUpdateReq,
+    userProfileUpdateSuccess,
+    userProfileUpdateFail
 } from "../action-creators/userActionCreator";
 
 export const signIn = (userPayload) => async (dispatch) => {
@@ -119,5 +125,56 @@ export const signUp = (userPayload) => async (dispatch) => {
         }
     } catch (error) {
         dispatch(userSignUpFail(error));
+    }
+};
+
+export const getUserDetails = () => async (dispatch, getState) => {
+    dispatch(userDetailsReq());
+
+    const token =
+        getState().userSignIn.userData.token ||
+        JSON.parse(localStorage.getItem("userData")).token;
+
+    const config = {
+        headers: {
+            "Content-Type": "application/json; charset=UTF-8",
+            Authorization: `Bearer ${token}`,
+        },
+    };
+
+    try {
+        const { data } = await axios.get(
+            `${process.env.REACT_APP_API_URL}/me`,
+            config
+        );
+        dispatch(userDetailsSuccess(data.data));
+    } catch (error) {
+        dispatch(userDetailsFail(error));
+    }
+};
+
+export const updateUserProfile = (userData) => async (dispatch, getState) => {
+    dispatch(userProfileUpdateReq());
+
+    const token =
+        getState().userSignIn.userData.token ||
+        JSON.parse(localStorage.getItem("userData")).token;
+
+    const config = {
+        headers: {
+            "Content-Type": "application/json; charset=UTF-8",
+            Authorization: `Bearer ${token}`,
+        },
+    };
+
+    try {
+        const { data } = await axios.put(
+            `${process.env.REACT_APP_API_URL}/me`,
+            userData,
+            config
+        );
+        dispatch(userProfileUpdateSuccess(data.updatedData));
+    } catch (error) {
+        dispatch(userProfileUpdateFail(error));
     }
 };

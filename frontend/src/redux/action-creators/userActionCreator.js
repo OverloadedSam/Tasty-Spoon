@@ -52,3 +52,57 @@ export const userSignUpFail = (error) => {
         },
     };
 };
+
+export const userDetailsReq = () => {
+    return {
+        type: actions.USER_DETAILS_REQUESTED,
+    };
+};
+
+export const userDetailsSuccess = (data) => {
+    return {
+        type: actions.USER_DETAILS_SUCCEEDED,
+        payload: {
+            data,
+        },
+    };
+};
+
+export const userDetailsFail = (error) => {
+    return {
+        type: actions.USER_DETAILS_FAILED,
+        payload: {
+            errorMsg:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        },
+    };
+};
+
+export const userProfileUpdateReq = () => {
+    return {
+        type: actions.USER_PROFILE_UPDATE_REQUESTED,
+    };
+};
+
+export const userProfileUpdateSuccess = (data) => {
+    return {
+        type: actions.USER_PROFILE_UPDATE_SUCCEEDED,
+        payload: {
+            data,
+        },
+    };
+};
+
+export const userProfileUpdateFail = (error) => {
+    return {
+        type: actions.USER_PROFILE_UPDATE_FAILED,
+        payload: {
+            errorMsg:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        },
+    };
+};
