@@ -12,8 +12,12 @@ import Category from './components/Category';
 import SignInScreen from "./screens/SignInScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import OrderedProductsScreen from "./screens/OrderedProductsScreen";
-import TransactionScreen from "./screens/TransactionScreen";
 import FavouritesScreen from "./screens/FavouritesScreen";
+import ProfileScreen from "./screens/ProfileScreen";
+import ShippingScreen from "./screens/ShippingScreen";
+import PaymentMethodScreen from "./screens/PaymentMethodScreen";
+import PlaceOrderScreen from "./screens/PlaceOrderScreen";
+import OrderScreen from "./screens/OrderScreen";
 
 function App() {
     return (
@@ -23,12 +27,16 @@ function App() {
                     <NavMenu />
                     <main>
                         <Switch>
-                            <Route exact path="/category/:producttype" component={Category} />
+                            <Route path="/category/:producttype" component={Category} />
                             <Route path="/productdetails/:id" component={ProductDetailsScreen} />
                             <Route path="/cart/:id?" component={CartScreen} />
+                            <Route path="/order/:id" component={OrderScreen} />
+                            <Route path="/profile" component={ProfileScreen} />
                             <Route path="/favourites" component={FavouritesScreen} />
                             <Route path="/ordereditems" component={OrderedProductsScreen} />
-                            <Route path="/transaction" component={TransactionScreen} />
+                            <Route path="/shipping" component={ShippingScreen} />
+                            <Route path="/payment" component={PaymentMethodScreen} />
+                            <Route path="/placeorder" component={PlaceOrderScreen} />
                             <Route path="/signin" component={SignInScreen} />
                             <Route path="/signup" component={SignUpScreen} />
                             <Route path="/grocery" component={Products} />
