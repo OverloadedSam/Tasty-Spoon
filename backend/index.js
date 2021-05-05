@@ -1,6 +1,6 @@
 const express = require("express");
 const server = express();
-const errorHandler = require("./helpers/errorHandler")
+const errorHandler = require("./helpers/errorHandler");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require("dotenv/config");
@@ -16,7 +16,8 @@ const signupRoutes = require("./routes/signUp");
 const signInRoutes = require("./routes/signIn");
 const usersRoutes = require("./routes/users");
 const orderRoutes = require("./routes/orders");
-const favouriteRouters = require("./routes/favourite");
+const favouriteRoutes = require("./routes/favourite");
+const paymentRoutes = require("./routes/payments");
 
 //Middle wares
 server.use(morgan("tiny"));
@@ -36,7 +37,8 @@ server.use(api, signupRoutes); // for signing/logging in of user
 server.use(api, signInRoutes); // for registration/signing up of user
 server.use(api, usersRoutes); // for user routes
 server.use(api, orderRoutes);
-server.use(api, favouriteRouters);
+server.use(api, favouriteRoutes);
+server.use(api, paymentRoutes);
 
 server.use(errorHandler); // Custom error handler middleware.
 
