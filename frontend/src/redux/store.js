@@ -12,7 +12,12 @@ import {
     userDetailsReducer,
     userProfileUpdateReducer,
 } from "./reducers/userReducer";
-import { orderReducer, orderDetailsReducer } from "./reducers/orderReducer";
+import {
+    orderReducer,
+    orderDetailsReducer,
+    orderByIdReducer,
+    orderPaymentReducer,
+} from "./reducers/orderReducer";
 import { categoryReducer } from "./reducers/categoryReducer";
 import { favouriteReducer } from "./reducers/favouriteReducer";
 
@@ -26,8 +31,10 @@ const rootReducer = combineReducers({
     userProfileUpdate: userProfileUpdateReducer,
     order: orderReducer,
     orderDetails: orderDetailsReducer,
+    orderDetailsById: orderByIdReducer,
+    orderPayment: orderPaymentReducer,
     category: categoryReducer,
-    favourites: favouriteReducer
+    favourites: favouriteReducer,
 });
 
 const middleware = [thunk];

@@ -6,6 +6,12 @@ import {
     orderDetailsReq,
     orderDetailsSuccess,
     orderDetailsFail,
+    orderByIdReq,
+    orderByIdSuccess,
+    orderByIdFail,
+    orderPaymentReq,
+    orderPaymentSuccess,
+    orderPaymentFail,
 } from "../action-creators/orderActionCreators";
 import { REMOVED_ALL_FROM_CART } from "../action-types/cartActionTypes";
 import axios from "axios";
@@ -27,6 +33,8 @@ export const placeAnOrder = () => async (dispatch, getState) => {
         const orderDataObj = {
             userId: getState().userSignIn.userData.userId,
             cartItems: getState().cart.cartItems,
+            paymentMethod: getState().cart.paymentMethod,
+            shippingAddress: getState().cart.shippingAddress,
         };
 
         const { data } = await axios.post(
@@ -38,7 +46,7 @@ export const placeAnOrder = () => async (dispatch, getState) => {
         if (data.success) {
             delete data["success"];
             delete data["status"];
-            dispatch(placeOrderSuccess(data));
+            dispatch(placeOrderSuccess(data.data));
             dispatch({ type: REMOVED_ALL_FROM_CART });
             localStorage.removeItem("cartItems");
         } else if (data.status === 500) {
@@ -91,3 +99,74 @@ export const getOrderDetails = () => async (dispatch, getState) => {
         dispatch(orderDetailsFail(error));
     }
 };
+
+export const getOrderDetailById = (orderId) => async (dispatch, getState) => {
+    dispatch(orderByIdReq());
+
+    const token = JSON.parse(localStorage.getItem("userData")).token;
+    const config = {
+        headers: {
+            "Content-Type": "application/json; charset=UTF-8",
+            Authorization: `Bearer ${token}`,
+        },
+    };
+
+    try {
+        const { data } = await axios.get(`${apiUrl}/order/${orderId}`, config);
+
+        if (data.success) {
+            dispatch(orderByIdSuccess(data.orderData));
+        }
+
+        if (data.status >= 400) {
+            dispatch({
+                type: actions.ORDER_DETAILS_FAILED,
+                action: {
+                    payload: {
+                        errorMsg: data.message,
+                    },
+                },
+            });
+        }
+    } catch (error) {
+        dispatch(orderByIdFail(error));
+    }
+};
+
+export const payOrder =
+    (orderId, paymentResult) => async (dispatch, getState) => {
+        dispatch(orderPaymentReq());
+
+        const token = JSON.parse(localStorage.getItem("userData")).token;
+        const config = {
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8",
+                Authorization: `Bearer ${token}`,
+            },
+        };
+
+        try {
+            const { data } = await axios.put(
+                `${apiUrl}/payorder/${orderId}`,
+                paymentResult,
+                config
+            );
+
+            if (data.success) {
+                dispatch(orderPaymentSuccess(data.orderData));
+            }
+
+            if (data.status >= 400) {
+                dispatch({
+                    type: actions.ORDER_PAYMENT_FAILED,
+                    action: {
+                        payload: {
+                            errorMsg: data.message,
+                        },
+                    },
+                });
+            }
+        } catch (error) {
+            dispatch(orderPaymentFail(error));
+        }
+    };

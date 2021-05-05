@@ -4,7 +4,7 @@ let orderInitState = {
     loading: false,
     error: false,
     placedOrder: false,
-    orderedItems: [],
+    orderData: {},
 };
 export const orderReducer = (state = orderInitState, action) => {
     switch (action.type) {
@@ -21,7 +21,7 @@ export const orderReducer = (state = orderInitState, action) => {
             return {
                 loading: false,
                 placedOrder: true,
-                orderedItems: [...state.orderedItems, action.payload.data],
+                orderData: action.payload.data,
             };
         }
 
@@ -30,6 +30,14 @@ export const orderReducer = (state = orderInitState, action) => {
                 loading: false,
                 placedOrder: false,
                 error: action.payload.errorMsg,
+            };
+        }
+        case actions.PLACE_ORDER_RESET: {
+            return {
+                loading: false,
+                error: false,
+                placedOrder: false,
+                orderData: {},
             };
         }
 
@@ -57,6 +65,77 @@ export const orderDetailsReducer = (state = orderDetailsInitState, action) => {
             return {
                 loading: false,
                 error: action.payload.errorMsg,
+            };
+        }
+
+        default:
+            return state;
+    }
+};
+
+const orderByIdInitState = { loading: false, error: false, orderDetails: {} };
+export const orderByIdReducer = (state = orderByIdInitState, action) => {
+    switch (action.type) {
+        case actions.ORDER_BY_ID_REQUESTED: {
+            return { ...state, loading: true, error: false };
+        }
+
+        case actions.ORDER_BY_ID_SUCCEEDED: {
+            return {
+                loading: false,
+                error: false,
+                orderDetails: action.payload.data,
+            };
+        }
+
+        case actions.ORDER_BY_ID_FAILED: {
+            return {
+                loading: false,
+                error: action.payload.errorMsg,
+            };
+        }
+
+        case actions.ORDER_BY_ID_RESET: {
+            return {
+                loading: false,
+                error: false,
+                orderDetails: {},
+            };
+        }
+
+        default:
+            return state;
+    }
+};
+
+const orderPaymentInitState = { loading: false, error: false, success: false };
+export const orderPaymentReducer = (state = orderPaymentInitState, action) => {
+    switch (action.type) {
+        case actions.ORDER_PAYMENT_REQUESTED: {
+            return { ...state, loading: true, error: false };
+        }
+
+        case actions.ORDER_PAYMENT_SUCCEEDED: {
+            return {
+                loading: false,
+                error: false,
+                success: true,
+            };
+        }
+
+        case actions.ORDER_PAYMENT_FAILED: {
+            return {
+                loading: false,
+                error: action.payload.errorMsg,
+                success: false,
+            };
+        }
+
+        case actions.ORDER_PAYMENT_RESET: {
+            return {
+                loading: false,
+                error: false,
+                success: false,
             };
         }
 
