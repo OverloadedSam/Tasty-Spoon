@@ -37,3 +37,30 @@ export const orderReducer = (state = orderInitState, action) => {
             return state;
     }
 };
+
+let orderDetailsInitState = { loading: false, error: false, orders: [] };
+export const orderDetailsReducer = (state = orderDetailsInitState, action) => {
+    switch (action.type) {
+        case actions.ORDER_DETAILS_REQUESTED: {
+            return { ...state, loading: true, error: false };
+        }
+
+        case actions.ORDER_DETAILS_SUCCEEDED: {
+            return {
+                loading: false,
+                error: false,
+                orders: [...action.payload.data],
+            };
+        }
+
+        case actions.ORDER_DETAILS_FAILED: {
+            return {
+                loading: false,
+                error: action.payload.errorMsg,
+            };
+        }
+
+        default:
+            return state;
+    }
+};
