@@ -71,7 +71,7 @@ const NavMenu = () => {
                                 variant="info"
                                 >
                                     <Dropdown.Header className="text-capitalize"><i className="fa fa-user-circle-o"></i>{" "}{userFirstName}</Dropdown.Header>
-                                    <Dropdown.Item as={Link} to="/" ><i className="fa fa-gear text-primary"></i>{" "}Profile</Dropdown.Item>
+                                    <Dropdown.Item as={Link} to="/profile" ><i className="fa fa-gear text-primary"></i>{" "}Profile</Dropdown.Item>
                                     <Dropdown.Item as={Link} to="/ordereditems" ><i className="fa fa-truck text-success"></i>{" "}My Orders</Dropdown.Item>
                                     <Dropdown.Item as={Link} to="/favourites" ><i className="fa fa-heart text-danger"></i>{" "}Favourites</Dropdown.Item>
                                     <Dropdown.Divider />

@@ -95,16 +95,16 @@ const Footer = () => {
                                 }}
                             />
                             <p>
-                                <a href="#!">Home</a>
+                                <Link to="/">Home</Link>
                             </p>
                             <p>
-                                <a href="#!">About</a>
+                                <Link to="/about">About</Link>
                             </p>
                             <p>
-                                <a href="#!">Meals</a>
+                                <Link to="/meal">Meals</Link>
                             </p>
                             <p>
-                                <a href="#!">Grocery</a>
+                                <Link to="grocery">Grocery</Link>
                             </p>
                         </Col>
 
