@@ -10,7 +10,6 @@ const getUsers = async (req, res, next) => {
     } catch (error) {
         console.log("Some error ocurred");
         console.log(error);
-        // return res.status(400).json({ error });
         return next(error);
     }
 
@@ -22,48 +21,24 @@ const getUsers = async (req, res, next) => {
     });
 };
 
-// Get single user from the DB by specifying "_id" [READ] .
-const getUserById = async (req, res, next) => {
+// Get single user from the DB (Own profile) [READ] .
+const getMyProfile = async (req, res, next) => {
     try {
-        var response = await User.findById(req.params.id); // Read user asynchronously.
-        if (!response)
-            return next(
-                new ErrorResponse(
-                    `Id ${req.params.id} did not found! Please provide correct id.`,
-                    404
-                )
-            );
+        const user = { ...req.user._doc };
+        delete user["passwordHash"];
+        delete user["privileges"];
+        delete user["createdAt"];
+        delete user["updatedAt"];
+        delete user["__v"];
+
+        return res.status(200).json({
+            success: true,
+            status: 200,
+            data: user,
+        });
     } catch (error) {
-        console.log("Some error ocurred");
-        console.log(error);
         return next(error);
     }
-
-    const {
-        _id,
-        firstName,
-        address,
-        phone,
-        email,
-        privileges,
-        createdAt,
-        updatedAt,
-    } = response;
-    // Return the user in response (If found).
-    return res.status(200).json({
-        success: true,
-        status: 200,
-        data: {
-            _id,
-            firstName,
-            address,
-            phone,
-            email,
-            privileges,
-            createdAt,
-            updatedAt,
-        },
-    });
 };
 
 // Post user to the DB [CREATE].
@@ -112,12 +87,12 @@ const postUser = async (req, res, next) => {
     });
 };
 
-// Put/Update user in DB by specifying an id.
-const putUserById = async (req, res, next) => {
-    let dataToBeUpdated = req.body;
+// Put/Update user in DB by (Update own profile).
+const updateMyProfile = async (req, res, next) => {
+    let data = { ...req.body };
 
     // Updated data validation for User, returns error if invalid.
-    const { error } = userDataUpdateValidator(dataToBeUpdated);
+    const { error } = userDataUpdateValidator(data);
     if (error) {
         return next(
             new ErrorResponse(
@@ -126,19 +101,19 @@ const putUserById = async (req, res, next) => {
             )
         );
     }
+    if (data.password) {
+        data.passwordHash = data.password;
+        delete data.password;
+    }
 
     try {
         // Finds email whether it exists in DB.
-        if (dataToBeUpdated.email) {
+        if (data.email) {
             const emailFound = await User.findOne({
-                email: dataToBeUpdated.email,
+                email: data.email,
             });
-            if (emailFound && emailFound._id == req.params.id) {
-                return next(
-                    new ErrorResponse("Please provide new e-mail address", 406)
-                );
-            }
-            if (emailFound && emailFound._id != req.params.id) {
+
+            if (emailFound && !emailFound._id.equals(req.user._doc._id)) {
                 return next(
                     new ErrorResponse(
                         `E-mail ${emailFound.email} has been already registered with other account`,
@@ -148,16 +123,12 @@ const putUserById = async (req, res, next) => {
             }
         }
         // Finds phone whether it exists in DB.
-        if (dataToBeUpdated.phone) {
+        if (data.phone) {
             const phoneFound = await User.findOne({
-                phone: dataToBeUpdated.phone,
+                phone: data.phone,
             });
-            if (phoneFound && phoneFound._id == req.params.id) {
-                return next(
-                    new ErrorResponse("Please provide new phone number", 406)
-                );
-            }
-            if (phoneFound && phoneFound._id != req.params.id) {
+
+            if (phoneFound && !phoneFound._id.equals(req.user._doc._id)) {
                 return next(
                     new ErrorResponse(
                         `Phone ${phoneFound.phone} has been already registered with other account`,
@@ -168,32 +139,26 @@ const putUserById = async (req, res, next) => {
         }
 
         // Asynchronously updates the only data that is coming in request.
-        const isUpdate = await User.findByIdAndUpdate(
-            req.params.id,
-            dataToBeUpdated,
-            {
-                new: true,
-                useFindAndModify: false,
-            }
-        );
+        const updated = await User.findByIdAndUpdate(req.user._doc._id, data, {
+            new: true,
+            useFindAndModify: false,
+        });
 
-        // Send success in response.
-        if (!isUpdate) {
-            return next(
-                new ErrorResponse(
-                    `Id ${req.params.id} did not found! Please provide correct id.`,
-                    400
-                )
-            );
-        }
+        const updatedData = { ...updated._doc };
+        delete updatedData["passwordHash"];
+        delete updatedData["createdAt"];
+        delete updatedData["updatedAt"];
+        delete updatedData["__v"];
+        delete updatedData["privileges"];
+
         return res.status(200).json({
+            success: true,
+            status: 200,
             message: "Successfully updated the data",
-            updatedData: { ...dataToBeUpdated },
+            updatedData,
         });
     } catch (error) {
-        console.log("Some error ocurred!");
-        console.log(error);
         return next(error);
     }
 };
-module.exports = { getUsers, postUser, getUserById, putUserById };
+module.exports = { getUsers, postUser, getMyProfile, updateMyProfile };

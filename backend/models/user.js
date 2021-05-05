@@ -58,6 +58,20 @@ userSchema.pre("save", async function (next) {
     next();
 });
 
+userSchema.pre("findOneAndUpdate", async function (next) {
+    const updatedDocument = this.getUpdate();
+    if (!updatedDocument.passwordHash) {
+        next();
+    }
+
+    const salt = await bcryptjs.genSalt(Number(process.env.SALT));
+    updatedDocument.passwordHash = await bcryptjs.hash(
+        updatedDocument.passwordHash,
+        salt
+    );
+    next();
+});
+
 userSchema.methods.matchPassword = async function (password) {
     return await bcryptjs.compare(password, this.passwordHash);
 };
