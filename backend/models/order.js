@@ -18,6 +18,7 @@ const OrderSchema = new mongoose.Schema(
         },
         paymentMethod: {
             type: String,
+            required: true,
             default: "Cash on delivery",
         },
         orderedItems: [
@@ -33,17 +34,73 @@ const OrderSchema = new mongoose.Schema(
                 qty: { type: Number, required: true },
             },
         ],
-        shippingAdd: {
-            type: String,
-            require: true,
+        shippingAddress: {
+            district: {
+                type: String,
+                required: true,
+                enum: [
+                    "Central Delhi",
+                    "East Delhi",
+                    "New Delhi",
+                    "North Delhi",
+                    "North East Delhi",
+                    "North West Delhi",
+                    "Shahdra",
+                    "South Delhi",
+                    "South East Delhi",
+                    "South West Delhi",
+                    "West Delhi",
+                ],
+            },
+            pinCode: { type: Number, required: true, min: 100001, max: 201313 },
+            landmark: { type: String, maxLength: 128 },
+            address: {
+                type: String,
+                required: true,
+                minLength: 10,
+                maxLength: 1024,
+            },
         },
-        status: {
-            type: String,
-            Default: "Shipped",
+        paymentResult: {
+            id: { type: String },
+            status: { type: String },
+            update_time: { type: String },
+            email_address: { type: String },
+        },
+        gst: {
+            type: Number,
+            required: true,
+            default: 0.0,
+        },
+        deliveryCharges: {
+            type: Number,
+            default: 0.0,
         },
         totalPayableAmount: {
             type: Number,
             require: true,
+        },
+        isPaid: {
+            type: Boolean,
+            required: true,
+            default: false,
+        },
+        paidAt: {
+            type: Date,
+        },
+        paymentResult: {
+            id: { type: String },
+            status: { type: String },
+            update_time: { type: String },
+            email_address: { type: String },
+        },
+        isDelivered: {
+            type: Boolean,
+            required: true,
+            default: false,
+        },
+        deliveredAt: {
+            type: Date,
         },
         dateOrdered: {
             type: String,
