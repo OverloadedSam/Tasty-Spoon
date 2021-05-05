@@ -36,7 +36,7 @@ const CartScreen = ({ match, history, location }) => {
             return;
         }
 
-        history.push("/transaction");
+        history.push("/shipping");
     };
 
     // Delete items from cart screen
