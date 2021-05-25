@@ -1,13 +1,13 @@
 import * as actions from "../action-types/productActionTypes";
 
-const prodListInitState = { products: [], loading: false, error: false };
+const prodListInitState = { products: [], loading: false, error: false, count: 0 };
 export const productListReducer = (state = prodListInitState, action) => {
     switch (action.type) {
         case actions.PRODUCT_LIST_REQUESTED:
             return { ...state, loading: true };
 
         case actions.PRODUCT_LIST_SUCCEEDED:
-            return { ...state, loading: false, products: action.payload.data };
+            return { ...state, loading: false, products: action.payload.data, count: action.payload.count};
 
         case actions.PRODUCT_LIST_FAILED:
             return { ...state, loading: false, error: action.payload.errorMsg };

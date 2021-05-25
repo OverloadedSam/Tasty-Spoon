@@ -9,7 +9,7 @@ export const prodListReq = () => {
 export const prodListSuccess = (data) => {
     return {
         type: actions.PRODUCT_LIST_SUCCEEDED,
-        payload: { data },
+        payload: { data: data.data, count: data.totalCount},
     };
 };
 
