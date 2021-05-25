@@ -253,6 +253,31 @@ const putProductById = async (req, res, next) => {
     }
 };
 
+// Get products in paginated form by specifying page number.
+const paginateData = async (req, res, next) => {
+    try {
+        const page = Math.abs(parseInt(req.query.page)) || 1;
+        const pageSize = 12;
+        const items = pageSize * (page - 1);
+
+        const filter = req.params.prodtype
+            ? { productType: req.params.prodtype }
+            : {};
+        const totalCount = await Product.find(filter).count();
+        const products = await Product.find(filter).skip(items).limit(pageSize);
+
+        return res.status(200).json({
+            success: true,
+            status: 200,
+            totalCount,
+            count: products.length,
+            data: products,
+        });
+    } catch (error) {
+        return next(error);
+    }
+};
+
 module.exports = {
     getProducts,
     postProducts,
@@ -261,4 +286,5 @@ module.exports = {
     getProductById,
     getByProductType,
     getProductsByCategory,
+    paginateData,
 };

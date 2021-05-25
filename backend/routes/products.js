@@ -8,11 +8,12 @@ const {
     getProductById,
     getByProductType,
     getProductsByCategory,
+    paginateData
 } = require("../controllers/products");
 
 router.route("/products").get(getProducts).post(postProducts);
 router.route("/products/category").get(getProductsByCategory);
-router.route("/products/:prodtype").get(getByProductType);
+router.get("/products/:prodtype", paginateData);
 router
     .route("/product/:id")
     .get(getProductById)
