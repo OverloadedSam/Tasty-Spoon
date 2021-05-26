@@ -262,7 +262,7 @@ const SignUpScreen = ({ history }) => {
                                 onChange={onChangeFormHandler}
                                 as="textarea"
                                 name="address"
-                                placeholder="NOTE: Give the address where you want to get your food and grocery delivered!"
+                                // placeholder="NOTE: Give the address where you want to get your food and grocery delivered!"
                                 isInvalid={
                                     (userData.address.length !== 0 &&
                                         userData.address.length < 10) ||
